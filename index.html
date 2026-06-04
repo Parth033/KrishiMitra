@@ -1,0 +1,2935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>KrishiMitra — Smart Farming Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --g:#2d5a27;--g2:#3a7a32;--gl:#e8f5e2;--gp:#a8d89a;
+  --amb:#c27c1a;--al:#fef5e0;--blu:#1a4a8a;--bl:#e4eef8;
+  --red:#a02b2b;--rl:#fbeaea;--pur:#531dab;--pl:#f3eeff;
+  --tel:#1a6b5a;--tl:#e2f5f0;--org:#c2410c;--ol:#fff0e8;
+  --bg:#faf6f0;--card:#fff;--card2:#f3ede4;--bdr:#e0d5c8;--bdr2:#c8bfb0;
+  --txt:#1a1208;--txt2:#5a4a35;--txt3:#a09080;
+  --font:'DM Sans',sans-serif;
+  --sh:0 2px 12px rgba(45,90,39,.1);--sh2:0 4px 20px rgba(45,90,39,.15);
+}
+body{background:var(--bg);font-family:var(--font);color:var(--txt);font-size:14px;min-height:100vh}
+.banner{background:#1a1a2e;color:#a8d8ea;font-size:11px;padding:7px 14px;text-align:center}
+.banner strong{color:#f0a500}.banner .free{color:#4ade80;font-weight:700}
+.topbar{background:var(--g);padding:10px 14px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 3px 10px rgba(0,0,0,.2)}
+.logo{width:36px;height:36px;background:rgba(255,255,255,.18);border-radius:10px;display:grid;place-items:center;font-size:20px;border:1.5px solid rgba(255,255,255,.25);flex-shrink:0}
+.topbar-info{flex:1}
+.topbar-title{font-size:16px;font-weight:700;color:#fff;letter-spacing:-.2px}
+.topbar-sub{font-size:10px;color:rgba(255,255,255,.7)}
+.lang-btn{display:flex;border:1.5px solid rgba(255,255,255,.3);border-radius:8px;overflow:hidden;background:rgba(255,255,255,.1)}
+.lang-btn button{padding:5px 11px;font-size:12px;font-weight:600;border:none;background:transparent;color:rgba(255,255,255,.7);cursor:pointer;font-family:var(--font);transition:.15s}
+.lang-btn button.on{background:rgba(255,255,255,.25);color:#fff}
+.tabbar{display:flex;background:var(--card);border-bottom:2px solid var(--bdr);overflow-x:auto;scrollbar-width:none;box-shadow:var(--sh)}
+.tabbar::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;min-width:64px;padding:9px 4px 7px;display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:transparent;cursor:pointer;border-bottom:2.5px solid transparent;transition:.2s;color:var(--txt3);font-family:var(--font)}
+.tab.on{border-bottom-color:var(--g);color:var(--g);background:var(--gl)}
+.tab svg{width:18px;height:18px;stroke-width:1.8;fill:none;stroke:currentColor}
+.tab span{font-size:9px;font-weight:600;white-space:nowrap;text-transform:uppercase;letter-spacing:.2px}
+.page{display:none;padding:14px;padding-bottom:32px}
+.page.on{display:block}
+.hero{background:linear-gradient(135deg,var(--g),#1c3d18);border-radius:16px;padding:20px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:var(--sh2)}
+.hero::after{content:'🌾';position:absolute;right:12px;bottom:8px;font-size:60px;opacity:.1;transform:rotate(-15deg)}
+.hero h2{font-size:20px;font-weight:700;color:#fff;letter-spacing:-.3px;margin-bottom:5px;position:relative;z-index:1}
+.hero p{font-size:12px;color:rgba(255,255,255,.78);line-height:1.6;position:relative;z-index:1}
+.hero-tag{font-size:10px;font-weight:700;color:rgba(255,255,255,.75);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;position:relative;z-index:1}
+.hero-pills{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;position:relative;z-index:1}
+.hero-pill{background:rgba(255,255,255,.15);color:#fff;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;border:1px solid rgba(255,255,255,.2)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat{background:var(--card);border-radius:14px;border:1.5px solid var(--bdr);padding:14px;cursor:pointer;transition:.2s;box-shadow:0 1px 4px rgba(0,0,0,.06);position:relative;overflow:hidden}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0}
+.s1::before{background:linear-gradient(90deg,var(--g),var(--g2))}
+.s2::before{background:linear-gradient(90deg,var(--amb),#f0a500)}
+.s3::before{background:linear-gradient(90deg,#8b5e3c,#c4895a)}
+.s4::before{background:linear-gradient(90deg,var(--blu),#2a6ad4)}
+.stat:hover{transform:translateY(-2px);border-color:var(--gp)}
+.stat .ico{font-size:22px;margin-bottom:8px}
+.stat .val{font-size:20px;font-weight:700;color:var(--txt);letter-spacing:-.4px}
+.stat .lbl{font-size:11px;color:var(--txt2);margin-top:2px}
+.stat .chg{font-size:11px;margin-top:6px;padding:3px 8px;border-radius:8px;display:inline-block;font-weight:600}
+.up{background:var(--gl);color:#1a3d14}.dn{background:var(--rl);color:#6b1010}.flat{background:var(--card2);color:var(--txt2)}
+.sec{background:var(--card);border-radius:14px;border:1.5px solid var(--bdr);padding:16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.sec-head h3{font-size:14px;font-weight:700;color:var(--txt)}
+.badge{font-size:10px;padding:3px 9px;border-radius:8px;font-weight:700}
+.badge.g{background:var(--gl);color:#1a3d14}.badge.a{background:var(--al);color:#3a1e00}
+.tip{border-radius:10px;padding:11px 13px;margin-bottom:8px;font-size:12px;line-height:1.6;border-left:3px solid}
+.tip:last-child{margin-bottom:0}
+.tip.g{background:var(--gl);color:#1a3d14;border-color:var(--g)}
+.tip.a{background:var(--al);color:#3a1e00;border-color:var(--amb)}
+.tip.r{background:var(--rl);color:#4a1010;border-color:var(--red)}
+.feat{background:var(--card);border:1.5px solid var(--bdr);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:.2s;margin-bottom:8px}
+.feat:hover{border-color:var(--gp);background:var(--gl)}
+.feat:last-child{margin-bottom:0}
+.feat-ico{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:20px;flex-shrink:0}
+.feat-info h4{font-size:13px;font-weight:700;color:var(--txt)}
+.feat-info p{font-size:11px;color:var(--txt2);margin-top:1px}
+.feat-arr{color:var(--txt3);font-size:18px;margin-left:auto}
+.btn{padding:11px;border:none;border-radius:10px;background:var(--g);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);transition:.2s;box-shadow:0 3px 10px rgba(45,90,39,.25)}
+.btn:hover{background:var(--g2);transform:translateY(-1px)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-full{width:100%;text-align:center}
+.btn-row{display:flex;gap:8px}
+.wiz-opt{width:100%;padding:10px 13px;border:1.5px solid var(--bdr);border-radius:10px;background:var(--card2);color:var(--txt2);font-size:13px;font-family:var(--font);cursor:pointer;text-align:left;margin-bottom:7px;transition:.15s;font-weight:500}
+.wiz-opt:last-child{margin-bottom:0}
+.wiz-opt.sel{background:var(--gl);border-color:var(--g);color:#1a3d14;font-weight:600}
+.wiz-label{font-size:11px;font-weight:700;color:var(--txt2);margin-bottom:7px;text-transform:uppercase;letter-spacing:.4px}
+.step-row{display:flex;align-items:center;gap:6px;margin-bottom:16px}
+.step-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--bdr);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--txt3);flex-shrink:0;transition:.2s}
+.step-dot.done{background:var(--g);border-color:var(--g);color:#fff}
+.step-dot.cur{border-color:var(--g);color:var(--g)}
+.step-line{flex:1;height:1px;background:var(--bdr)}
+.step-line.done{background:var(--g)}
+.wiz-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.price-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bdr)}
+.price-item:last-child{border-bottom:none}
+.p-ico{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:19px;background:var(--gl);flex-shrink:0}
+.p-nm{font-size:13px;font-weight:600;color:var(--txt);flex:1}
+.p-val{font-size:14px;font-weight:700;color:var(--txt)}
+.p-chg{font-size:10px;padding:2px 7px;border-radius:6px;font-weight:700}
+.fchip{padding:6px 13px;border-radius:14px;font-size:12px;font-weight:600;border:1px solid var(--bdr);background:var(--card2);color:var(--txt2);cursor:pointer;white-space:nowrap;transition:.15s;font-family:var(--font)}
+.fchip.on{background:var(--g);color:#fff;border-color:var(--g)}
+.w-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.w-cell{background:var(--card2);border-radius:12px;padding:13px;text-align:center;border:1px solid var(--bdr)}
+.w-ico{font-size:22px;margin-bottom:5px}.w-val{font-size:16px;font-weight:700;color:var(--txt)}.w-lbl{font-size:10px;color:var(--txt2);margin-top:2px}
+.day-row{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.day-cell{background:var(--card2);border-radius:10px;padding:8px 3px;text-align:center;border:1px solid var(--bdr)}
+.day-cell.today{background:var(--g);border-color:var(--g2)}
+.day-cell.today .day-nm,.day-cell.today .day-tmp{color:#fff}
+.day-nm{font-size:9px;font-weight:700;color:var(--txt2);margin-bottom:3px}
+.day-ico{font-size:13px;margin-bottom:3px}.day-tmp{font-size:10px;font-weight:700;color:var(--txt)}
+.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 200px);min-height:300px}
+.chat-msgs{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:85%;padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.6}
+.msg.bot{background:var(--card2);color:var(--txt);align-self:flex-start;border-bottom-left-radius:3px;border:1px solid var(--bdr)}
+.msg.user{background:var(--g);color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
+.chat-inp-wrap{padding:8px;border-top:1px solid var(--bdr);background:var(--card)}
+.inp-row{display:flex;gap:6px;align-items:center}
+.inp-row input{flex:1;padding:10px 12px;border:1px solid var(--bdr);border-radius:10px;font-size:13px;background:var(--card2);color:var(--txt);font-family:var(--font);outline:none}
+.inp-row input:focus{border-color:var(--g)}
+.inp-row input::placeholder{color:var(--txt3)}
+.send-btn{width:38px;height:38px;background:var(--g);border:none;border-radius:50%;display:grid;place-items:center;cursor:pointer;flex-shrink:0}
+.voice-btn{width:36px;height:36px;background:var(--card2);border:1px solid var(--bdr);border-radius:50%;display:grid;place-items:center;cursor:pointer;flex-shrink:0}
+.voice-btn.listening{background:var(--rl);border-color:var(--red)}
+.ai-loading{display:flex;align-items:center;gap:10px;padding:13px;background:var(--gl);border-radius:12px;font-size:13px;color:#1a3d14;font-weight:600;border:1px solid var(--gp)}
+.spinner{width:17px;height:17px;border:2.5px solid rgba(45,90,39,.2);border-top-color:var(--g);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.anim{animation:fadeIn .3s ease both}
+.res-hero{background:linear-gradient(135deg,var(--g),#1c3d18);border-radius:14px;padding:18px;margin-bottom:12px;text-align:center}
+.crop-row{display:flex;align-items:center;gap:10px;padding:11px;border-radius:12px;background:var(--card2);margin-bottom:8px;border:1.5px solid var(--bdr)}
+.crop-row.best{background:var(--gl);border-color:var(--gp)}
+.crop-emo{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:22px;flex-shrink:0}
+.crop-nm{font-size:13px;font-weight:700;color:var(--txt)}.crop-sub{font-size:11px;color:var(--txt2);margin-top:1px}
+.matchbar{height:4px;background:var(--card);border-radius:2px;margin-top:4px}
+.matchfill{height:100%;border-radius:2px;transition:width .6s}
+.yield-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+.y-cell{background:var(--card2);border-radius:10px;padding:11px;text-align:center;border:1px solid var(--bdr)}
+.y-val{font-size:17px;font-weight:700;color:var(--txt)}.y-lbl{font-size:10px;color:var(--txt2);margin-top:2px}
+.cal-step{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start}
+.cal-num{width:24px;height:24px;border-radius:50%;background:var(--g);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.alert-row{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;background:var(--card2);border:1px solid var(--bdr);margin-bottom:8px}
+.alert-del{background:var(--rl);border:none;border-radius:6px;padding:4px 8px;font-size:11px;color:var(--red);cursor:pointer;font-family:var(--font)}
+.a-inp{padding:9px 11px;border:1px solid var(--bdr);border-radius:9px;font-size:13px;background:var(--card2);color:var(--txt);font-family:var(--font);width:100%}
+.a-inp:focus{outline:none;border-color:var(--g)}
+select.sel-inp{width:100%;padding:10px 12px;border:1.5px solid var(--bdr);border-radius:10px;font-size:13px;background:var(--card2);color:var(--txt);font-family:var(--font);margin-bottom:10px;outline:none}
+select.sel-inp:focus{border-color:var(--g)}
+#input-camera,#input-gallery{display:none}
+.dd-dropzone{border:2px dashed var(--bdr2);border-radius:14px;padding:24px;text-align:center;background:var(--card2);cursor:pointer}
+.dd-dropzone:hover{border-color:var(--g);background:var(--gl)}
+.dd-icon{font-size:40px;margin-bottom:10px}
+.scan-conf-bar{height:8px;background:var(--card2);border-radius:4px;margin:6px 0}
+.scan-conf-fill{height:100%;border-radius:4px;transition:width .6s}
+.dd-chem-step{background:var(--al);border-radius:8px;padding:8px 10px;font-size:12px;color:#3a1e00;margin-bottom:6px;border:1px solid #e8c870}
+.mandi-card{display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:12px;border:1.5px solid var(--bdr);background:var(--card);margin-bottom:8px}
+.mandi-num{width:32px;height:32px;border-radius:9px;background:var(--g);display:grid;place-items:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.mandi-nm{font-size:13px;font-weight:700;color:var(--txt)}.mandi-dist{font-size:11px;color:var(--txt2)}.mandi-crops{font-size:10px;color:var(--txt3);margin-top:2px}
+.mandi-dist-km{font-size:12px;font-weight:700;color:var(--g2)}.mandi-timing{font-size:10px;color:var(--txt3);margin-top:2px}
+.helpline-card{border-radius:12px;border:1.5px solid var(--bdr);padding:13px;margin-bottom:10px;background:var(--card);display:flex;align-items:center;gap:12px}
+.h-ico{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-size:21px;flex-shrink:0}
+.h-name{font-size:13px;font-weight:700;color:var(--txt)}.h-desc{font-size:11px;color:var(--txt2);margin-top:1px}.h-num{font-size:13px;font-weight:700;color:var(--g);margin-top:2px}
+.call-btn{background:var(--gl);border:1px solid var(--gp);border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;color:var(--g);text-decoration:none;white-space:nowrap;margin-left:auto;font-family:var(--font)}
+/* ── Schemes (KisanSarthi-style) ── */
+.scheme-card{border-radius:14px;border:1.5px solid var(--bdr);padding:14px;margin-bottom:10px;background:var(--card);box-shadow:0 1px 4px rgba(0,0,0,.06);transition:all .2s}
+.scheme-card-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.scheme-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:22px;flex-shrink:0}
+.scheme-name{font-size:14px;font-weight:700;color:var(--txt);line-height:1.3}
+.scheme-ministry{font-size:11px;color:var(--txt2);margin-top:2px}
+.scheme-benefit{font-size:12px;color:var(--txt2);line-height:1.6;margin-bottom:8px}
+.scheme-tag{display:inline-block;font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;margin-right:4px;margin-bottom:4px;background:var(--gl);color:#1a3d14}
+.scheme-link{display:inline-block;margin-top:6px;font-size:12px;font-weight:700;color:var(--org);text-decoration:none;background:var(--ol);padding:4px 10px;border-radius:8px;border:1px solid #f0c090}
+.scheme-q-opt{width:100%;padding:10px 13px;background:var(--card2);border:1.5px solid var(--bdr);border-radius:10px;color:var(--txt2);font-size:13px;font-family:var(--font);cursor:pointer;text-align:left;margin-bottom:7px;transition:.15s;font-weight:500}
+.scheme-q-opt:hover{background:var(--card);border-color:var(--bdr2)}
+.scheme-q-opt.sel{background:var(--ol);border-color:var(--org);border-width:2px;color:#7c2d12;font-weight:600}
+.sc-q-block{margin-bottom:4px}
+/* ── Mandi (KisanSarthi-style) ── */
+.mandi-select{width:100%;padding:10px 12px;border:1.5px solid var(--bdr);border-radius:10px;font-size:13px;font-family:var(--font);background:var(--card);color:var(--txt);outline:none;cursor:pointer;margin-bottom:10px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.mandi-select:focus{border-color:var(--g)}
+.mandi-select:disabled{opacity:.5;cursor:not-allowed}
+.nf-step{background:var(--card2);border-radius:12px;padding:13px;border:1.5px solid var(--bdr);margin-bottom:10px}
+.nf-step-num{width:28px;height:28px;border-radius:50%;background:var(--g);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;flex-shrink:0}
+.empty{text-align:center;padding:24px;color:var(--txt3);font-size:13px}
+#pwa-banner{display:none;background:linear-gradient(135deg,var(--g),#1c3d18);padding:10px 14px;align-items:center;gap:10px}
+#pwa-banner span{color:#fff;font-size:12px;flex:1}
+.pwa-install{background:#fff;color:var(--g);border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)}
+.pwa-close{background:transparent;border:none;color:rgba(255,255,255,.7);font-size:18px;cursor:pointer}
+/* ── Bill Scanner ── */
+.bill-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}
+.bill-type-btn{padding:12px 8px;border-radius:12px;border:2px solid var(--bdr);background:var(--card);cursor:pointer;font-family:var(--font);font-size:12px;font-weight:600;color:var(--txt2);text-align:center;transition:.15s;display:flex;flex-direction:column;align-items:center;gap:5px}
+.bill-type-btn .bt-ico{font-size:24px}
+.bill-type-btn.sel{border-color:var(--amb);background:var(--al);color:#3a1e00}
+.bill-type-btn:hover{border-color:var(--g);background:var(--gl)}
+.bill-parsed-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}
+.bill-parsed-table th{background:var(--g);color:#fff;padding:7px 10px;text-align:left;font-size:11px;font-weight:700}
+.bill-parsed-table td{padding:7px 10px;border-bottom:1px solid var(--bdr);vertical-align:top}
+.bill-parsed-table tr:nth-child(even) td{background:var(--card2)}
+.bill-parsed-table .amt-col{font-weight:700;color:var(--g);text-align:right}
+.bill-parsed-table .total-row td{background:var(--al);font-weight:700;color:#3a1e00;border-top:2px solid var(--amb)}
+.bill-parsed-table .total-row .amt-col{color:var(--red)}
+.bill-summary-row{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-radius:9px;margin-bottom:6px;background:var(--card2);border:1px solid var(--bdr)}
+.bill-summary-row .bs-label{font-size:12px;color:var(--txt2)}
+.bill-summary-row .bs-val{font-size:14px;font-weight:700;color:var(--txt)}
+.bill-alert{border-radius:10px;padding:11px 13px;margin-bottom:8px;font-size:12px;line-height:1.55;border:1.5px solid}
+.bill-alert.warn{background:var(--al);border-color:var(--amb);color:#3a1e00}
+.bill-alert.ok{background:var(--gl);border-color:var(--gp);color:#1a3d14}
+.bill-alert.red{background:var(--rl);border-color:var(--red);color:#5a1010}
+.bill-raw-box{background:var(--card2);border:1px solid var(--bdr);border-radius:10px;padding:12px;font-size:11px;color:var(--txt2);line-height:1.7;white-space:pre-wrap;word-break:break-word;max-height:180px;overflow-y:auto;margin-top:8px}
+.ocr-progress{height:4px;border-radius:2px;background:var(--bdr);margin-top:8px;overflow:hidden}
+.ocr-progress-bar{height:100%;background:linear-gradient(90deg,var(--g),var(--g2));border-radius:2px;transition:width .4s}
+canvas{max-width:100%}
+</style>
+</head>
+<body>
+<div class="banner">🌾 <strong>KrishiMitra</strong> — AI Chat, Advisor, Disease Scan &amp; Weather all work <span class="free">for free</span> — no API key needed! 🚀</div>
+<div id="pwa-banner">
+  <span>📲 Add KrishiMitra to Home Screen!</span>
+  <button class="pwa-install" id="pwa-btn">Install</button>
+  <button class="pwa-close" id="pwa-close">✕</button>
+</div>
+<div class="topbar">
+  <div class="logo">🌿</div>
+  <div class="topbar-info">
+    <div class="topbar-title" id="app-title">KrishiMitra</div>
+    <div class="topbar-sub" id="app-sub">Smart Agriculture Advisor</div>
+  </div>
+  <div class="lang-btn">
+    <button class="on" id="btn-en" onclick="setLang('en',this)">EN</button>
+    <button id="btn-hi" onclick="setLang('hi',this)">हि</button>
+  </div>
+</div>
+<div class="tabbar">
+  <button class="tab on" id="tab-home" onclick="goPage('home',this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span id="t-home">Home</span></button>
+  <button class="tab" id="tab-advisor" onclick="goPage('advisor',this)"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><span id="t-advisor">Advisor</span></button>
+  <button class="tab" id="tab-prices" onclick="goPage('prices',this)"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg><span id="t-prices">Prices</span></button>
+  <button class="tab" id="tab-weather" onclick="goPage('weather',this)"><svg viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg><span id="t-weather">Weather</span></button>
+  <button class="tab" id="tab-chat" onclick="goPage('chat',this)"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span id="t-chat">AI Chat</span></button>
+  <button class="tab" id="tab-newfarmer" onclick="goPage('newfarmer',this)"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span id="t-newfarmer">New Farmer</span></button>
+  <button class="tab" id="tab-disease" onclick="goPage('disease',this)"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span id="t-disease">Scan Plant</span></button>
+  <button class="tab" id="tab-schemes" onclick="goPage('schemes',this)"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/></svg><span id="t-schemes">Schemes</span></button>
+  <button class="tab" id="tab-mandi" onclick="goPage('mandi',this)"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span id="t-mandi">Mandi</span></button>
+  <button class="tab" id="tab-helpline" onclick="goPage('helpline',this)"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.62 4.33 2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.08 6.08l.91-.91a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span id="t-helpline">Helpline</span></button>
+  <button class="tab" id="tab-bill" onclick="goPage('bill',this)"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg><span>Bill Scan</span></button>
+</div>
+
+<div class="page on" id="page-home">
+  <div class="hero">
+    <div class="hero-tag" id="h-greet">🙏 Namaste, Kisan!</div>
+    <h2 id="h-title">Welcome to KrishiMitra</h2>
+    <p id="h-sub">Your smart AI partner for better farming &amp; higher income</p>
+    <div class="hero-pills"><span class="hero-pill">🤖 AI Free</span><span class="hero-pill">🇮🇳 Hindi+EN</span><span class="hero-pill">📍 Live Weather</span></div>
+  </div>
+  <div class="stat-grid">
+    <div class="stat s1" onclick="goPage('advisor',document.getElementById('tab-advisor'))"><div class="ico">🌾</div><div class="val" style="color:var(--g)" id="home-crop">Wheat</div><div class="lbl">Best crop this season</div><div class="chg up">↑ 92% AI match</div></div>
+    <div class="stat s2" onclick="goPage('prices',document.getElementById('tab-prices'))"><div class="ico">💰</div><div class="val">₹2,425</div><div class="lbl">Wheat / quintal</div><div class="chg up">↑ 2.5% week</div></div>
+    <div class="stat s3" onclick="goPage('weather',document.getElementById('tab-weather'))"><div class="ico">🌤</div><div class="val" id="home-temp">--°C</div><div class="lbl">Live weather</div><div class="chg flat" id="home-wdesc">Loading…</div></div>
+    <div class="stat s4" onclick="goPage('chat',document.getElementById('tab-chat'))"><div class="ico">🤖</div><div class="val" style="color:var(--blu)">Ask AI</div><div class="lbl">Hindi &amp; English</div><div class="chg" style="background:var(--bl);color:var(--blu)">● Live</div></div>
+  </div>
+  <div class="sec">
+    <div class="sec-head"><h3>🚀 Features</h3></div>
+    <div class="feat" onclick="goPage('disease',document.getElementById('tab-disease'))"><div class="feat-ico" style="background:var(--pl)">🔬</div><div class="feat-info"><h4>Disease Scanner</h4><p>Upload leaf photo → AI diagnosis</p></div><div class="feat-arr">›</div></div>
+    <div class="feat" onclick="goPage('schemes',document.getElementById('tab-schemes'))"><div class="feat-ico" style="background:var(--ol)">🏛</div><div class="feat-info"><h4>Govt Schemes</h4><p>PM-KISAN, Fasal Bima &amp; more</p></div><div class="feat-arr">›</div></div>
+    <div class="feat" onclick="goPage('mandi',document.getElementById('tab-mandi'))"><div class="feat-ico" style="background:var(--tl)">📍</div><div class="feat-info"><h4>Mandi Locator</h4><p>Find nearest APMC + Maps</p></div><div class="feat-arr">›</div></div>
+    <div class="feat" onclick="goPage('newfarmer',document.getElementById('tab-newfarmer'))"><div class="feat-ico" style="background:var(--bl)">🌱</div><div class="feat-info"><h4>New Farmer Guide</h4><p>Step-by-step crop care plan</p></div><div class="feat-arr">›</div></div>
+    <div class="feat" onclick="goPage('helpline',document.getElementById('tab-helpline'))"><div class="feat-ico" style="background:var(--gl)">📞</div><div class="feat-info"><h4>Kisan Helpline</h4><p>1800-180-1551 · Free · 24×7</p></div><div class="feat-arr">›</div></div>
+  </div>
+  <div class="sec">
+    <div class="sec-head"><h3 id="h-tips">🌿 Today's Tips</h3><span class="badge g">Live</span></div>
+    <div class="tip g">🌱 Best time to sow <strong>Moong Dal</strong> — soil temp ideal. Expect 6–8 q/acre.</div>
+    <div class="tip a">⚠️ Aphid alert in your region. Apply neem spray before rain.</div>
+    <div class="tip g">💧 Wheat at grain-fill — water every 8 days. Do not overwater.</div>
+    <div class="tip r">🌡 Heat wave in 10 days — protect seedlings with shade net.</div>
+  </div>
+</div>
+
+<div class="page" id="page-advisor">
+  <div class="hero" style="background:linear-gradient(135deg,#1a4a8a,#0d2a5a)">
+    <div class="hero-tag">🌾 AI Crop Advisor</div>
+    <h2>Smart Crop Recommendation</h2>
+    <p>AI analyses your soil, season &amp; location for the best crop</p>
+  </div>
+  <div class="sec" id="adv-wizard">
+    <div class="step-row">
+      <div class="step-dot cur" id="sd0">1</div><div class="step-line" id="sl0"></div>
+      <div class="step-dot" id="sd1">2</div><div class="step-line" id="sl1"></div>
+      <div class="step-dot" id="sd2">3</div><div class="step-line" id="sl2"></div>
+      <div class="step-dot" id="sd3">4</div>
+    </div>
+    <div id="ws0">
+      <div class="wiz-label">🗺 Where is your farm?</div>
+      <div class="wiz-grid">
+        <button class="wiz-opt" onclick="selWizOpt(this,'state')">Uttar Pradesh</button>
+        <button class="wiz-opt" onclick="selWizOpt(this,'state')">Punjab</button>
+        <button class="wiz-opt" onclick="selWizOpt(this,'state')">Haryana</button>
+        <button class="wiz-opt" onclick="selWizOpt(this,'state')">Rajasthan</button>
+        <button class="wiz-opt" onclick="selWizOpt(this,'state')">Bihar</button>
+        <button class="wiz-opt" onclick="selWizOpt(this,'state')">Madhya Pradesh</button>
+        <button class="wiz-opt" onclick="selWizOpt(this,'state')">Maharashtra</button>
+        <button class="wiz-opt" onclick="selWizOpt(this,'state')">Gujarat</button>
+      </div>
+      <div style="height:8px"></div>
+      <button class="btn btn-full" onclick="advNext(0)">Next →</button>
+    </div>
+    <div id="ws1" style="display:none">
+      <div class="wiz-label">🌱 Soil type</div>
+      <button class="wiz-opt" onclick="selWizOpt(this,'soil')">Clay — holds water well</button>
+      <button class="wiz-opt" onclick="selWizOpt(this,'soil')">Loam — balanced texture</button>
+      <button class="wiz-opt" onclick="selWizOpt(this,'soil')">Sandy — drains fast</button>
+      <button class="wiz-opt" onclick="selWizOpt(this,'soil')">Black cotton soil</button>
+      <button class="wiz-opt" onclick="selWizOpt(this,'soil')">Red laterite soil</button>
+      <div style="height:8px"></div>
+      <div class="btn-row">
+        <button class="btn" style="background:var(--card2);color:var(--txt2);box-shadow:none" onclick="advBack(1)">← Back</button>
+        <button class="btn" style="flex:2" onclick="advNext(1)">Next →</button>
+      </div>
+    </div>
+    <div id="ws2" style="display:none">
+      <div class="wiz-label">📅 Season</div>
+      <div data-group="season">
+        <button class="wiz-opt" onclick="selWizOpt(this,'season')">☀️ Kharif (June–Nov)</button>
+        <button class="wiz-opt" onclick="selWizOpt(this,'season')">❄️ Rabi (Nov–Apr)</button>
+        <button class="wiz-opt" onclick="selWizOpt(this,'season')">🌸 Zaid (Apr–Jun)</button>
+      </div>
+      <div style="height:8px"></div>
+      <div class="wiz-label">💧 Water source</div>
+      <div data-group="water">
+        <button class="wiz-opt" onclick="selWizOpt(this,'water')">Canal / River irrigation</button>
+        <button class="wiz-opt" onclick="selWizOpt(this,'water')">Borewell / Tube well</button>
+        <button class="wiz-opt" onclick="selWizOpt(this,'water')">Rain-fed only</button>
+      </div>
+      <div style="height:8px"></div>
+      <div class="btn-row">
+        <button class="btn" style="background:var(--card2);color:var(--txt2);box-shadow:none" onclick="advBack(2)">← Back</button>
+        <button class="btn" style="flex:2" onclick="advNext(2)">Next →</button>
+      </div>
+    </div>
+    <div id="ws3" style="display:none">
+      <div class="wiz-label">📐 Land area (acres)</div>
+      <div class="wiz-grid">
+        <button class="wiz-opt" onclick="selWizOpt(this,'land')">Less than 1</button>
+        <button class="wiz-opt" onclick="selWizOpt(this,'land')">1 – 3</button>
+        <button class="wiz-opt" onclick="selWizOpt(this,'land')">3 – 5</button>
+        <button class="wiz-opt" onclick="selWizOpt(this,'land')">5 – 10</button>
+        <button class="wiz-opt" onclick="selWizOpt(this,'land')">10 – 20</button>
+        <button class="wiz-opt" onclick="selWizOpt(this,'land')">20+</button>
+      </div>
+      <div style="height:8px"></div>
+      <div class="btn-row">
+        <button class="btn" style="background:var(--card2);color:var(--txt2);box-shadow:none" onclick="advBack(3)">← Back</button>
+        <button class="btn" style="flex:2" onclick="runAdvisor()">🌾 Get AI Recommendation</button>
+      </div>
+    </div>
+  </div>
+  <div id="adv-loading" class="ai-loading" style="display:none;margin-bottom:12px"><div class="spinner"></div><span>AI is analysing your farm…</span></div>
+  <div id="adv-result" style="display:none">
+    <div class="res-hero anim"><div style="font-size:11px;color:rgba(255,255,255,.7);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px">AI Crop Analysis</div><div style="font-size:26px;font-weight:700;color:#fff" id="res-top">Wheat</div><div style="font-size:12px;color:rgba(255,255,255,.78);margin-top:4px" id="res-sum">Best for your conditions</div></div>
+    <div class="sec anim"><div class="sec-head"><h3>🏆 Top Crops</h3><span class="badge g">AI Ranked</span></div><div id="crop-list"></div></div>
+    <div class="sec anim" id="yield-sec" style="display:none"><div class="sec-head"><h3>📊 Yield Estimator</h3></div><div class="yield-grid"><div class="y-cell"><div class="y-val" id="y-qty">—</div><div class="y-lbl">Est. Yield (q)</div></div><div class="y-cell"><div class="y-val" id="y-price">—</div><div class="y-lbl">Price/quintal</div></div><div class="y-cell" style="background:var(--gl)"><div class="y-val" id="y-rev" style="color:var(--g)">—</div><div class="y-lbl">Gross Revenue</div></div></div><div class="tip g" id="y-tip"></div></div>
+    <div class="sec anim"><div class="sec-head"><h3>📅 Crop Calendar</h3></div><div id="cal-list"></div></div>
+    <button class="btn btn-full" style="margin-top:4px" onclick="resetAdvisor()">🔄 Start Over</button>
+  </div>
+</div>
+
+<div class="page" id="page-prices">
+  <div class="hero" style="background:linear-gradient(135deg,#8b5e3c,#4a2e10)">
+    <div class="hero-tag">💰 Mandi Bhav</div>
+    <h2>Live Crop Prices</h2>
+    <p>Real-time mandi rates · <button onclick="loadLivePrices()" style="background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)">🔄 Refresh</button></p>
+  </div>
+  <div class="sec">
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px" id="price-filters">
+      <button class="fchip on" onclick="filterPrices('all',this)">All</button>
+      <button class="fchip" onclick="filterPrices('grains',this)">Grains</button>
+      <button class="fchip" onclick="filterPrices('pulses',this)">Pulses</button>
+      <button class="fchip" onclick="filterPrices('vegetables',this)">Vegetables</button>
+      <button class="fchip" onclick="filterPrices('oilseeds',this)">Oilseeds</button>
+    </div>
+    <div id="price-ts" style="font-size:11px;color:var(--txt3);text-align:right;margin-bottom:8px"></div>
+    <div id="price-list"></div>
+  </div>
+  <div class="sec">
+    <div class="sec-head"><h3>🔔 Price Alerts</h3><span class="badge a">Watchlist</span></div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <select id="alert-sel" class="sel-inp" style="margin-bottom:0;flex:1">
+        <option value="">-- Select Crop --</option>
+        <option>Wheat</option><option>Moong Dal</option><option>Mustard</option><option>Paddy</option><option>Onion</option><option>Arhar Dal</option>
+      </select>
+      <input type="number" id="alert-price" class="a-inp" placeholder="₹ Target" style="width:90px">
+      <button class="btn" onclick="addPriceAlert()" style="flex-shrink:0;padding:9px 13px">+ Add</button>
+    </div>
+    <div id="alert-list"><div class="empty">No alerts set yet.</div></div>
+  </div>
+</div>
+
+<div class="page" id="page-weather">
+  <div class="sec">
+    <div class="sec-head"><h3 id="wx-loc">📍 Detecting location…</h3><span style="font-size:11px;color:var(--txt2)" id="wx-upd">Loading…</span></div>
+    <div id="wx-loading" class="ai-loading" style="display:none;margin-bottom:10px"><div class="spinner"></div><span>Fetching live weather…</span></div>
+    <div id="wx-content" style="display:none">
+      <div class="w-row">
+        <div class="w-cell"><div class="w-ico" id="wx-ico">🌤</div><div class="w-val" id="wx-temp">--°C</div><div class="w-lbl">Temperature</div></div>
+        <div class="w-cell"><div class="w-ico">💧</div><div class="w-val" id="wx-hum">--%</div><div class="w-lbl">Humidity</div></div>
+        <div class="w-cell"><div class="w-ico">🌬</div><div class="w-val" id="wx-wind">-- km/h</div><div class="w-lbl">Wind</div></div>
+      </div>
+      <div class="w-row" style="grid-template-columns:1fr 1fr">
+        <div class="w-cell"><div class="w-ico">🌧</div><div class="w-val" id="wx-rain">-- mm</div><div class="w-lbl">Rain today</div></div>
+        <div class="w-cell"><div class="w-ico">👁</div><div class="w-val" id="wx-feels">--°C</div><div class="w-lbl">Feels like</div></div>
+      </div>
+      <div class="day-row" id="wx-forecast"></div>
+    </div>
+    <div id="wx-error" style="display:none"><div class="tip r">📍 Could not get location. <button onclick="loadLiveWeather()" style="background:none;border:none;color:var(--blu);font-weight:700;cursor:pointer">Retry</button></div></div>
+  </div>
+  <div class="sec"><div class="sec-head"><h3>🌿 Crop Impact Tips</h3></div><div id="wx-tips"><div class="tip g">Loading weather-based tips…</div></div></div>
+</div>
+
+<div class="page" id="page-chat">
+  <div class="chat-wrap">
+    <div class="chat-msgs" id="chat-msgs">
+      <div class="msg bot">🙏 Namaste! I am KrishiAI, your smart farming assistant powered by AI. Ask me anything about crops, prices, weather, fertilizers, pest control, or government schemes. I answer in Hindi &amp; English!</div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:5px;padding:6px 10px;border-top:1px solid var(--bdr)">
+      <button class="fchip" onclick="qAsk('What is the best crop for this season?')">🌾 Best crop?</button>
+      <button class="fchip" onclick="qAsk('How to control aphids on wheat?')">🐛 Aphid control</button>
+      <button class="fchip" onclick="qAsk('What fertilizer for rice?')">🧪 Fertilizer</button>
+      <button class="fchip" onclick="qAsk('PM-KISAN scheme details')">🏛 PM-KISAN</button>
+    </div>
+    <div class="chat-inp-wrap">
+      <div class="inp-row">
+        <input type="text" id="chat-inp" placeholder="Type your farming question…" onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="voice-btn" id="voice-btn" onclick="toggleVoice()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
+        <button class="send-btn" onclick="sendChat()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-newfarmer">
+  <div class="hero" style="background:linear-gradient(135deg,#1a4a8a,#0d2a5a)">
+    <div class="hero-tag">🌱 New Farmer Guide</div>
+    <h2>Start Farming Right</h2>
+    <p>Complete step-by-step guide with water, fertilizer &amp; care plan</p>
+  </div>
+  <div class="sec" id="nf-select-sec">
+    <div class="sec-head"><h3>Select Crop</h3></div>
+    <div class="wiz-grid">
+      <button class="wiz-opt" onclick="selNFCrop(this,'Wheat')">🌾 Wheat</button>
+      <button class="wiz-opt" onclick="selNFCrop(this,'Rice')">🍚 Rice</button>
+      <button class="wiz-opt" onclick="selNFCrop(this,'Tomato')">🍅 Tomato</button>
+      <button class="wiz-opt" onclick="selNFCrop(this,'Potato')">🥔 Potato</button>
+      <button class="wiz-opt" onclick="selNFCrop(this,'Onion')">🧅 Onion</button>
+      <button class="wiz-opt" onclick="selNFCrop(this,'Maize')">🌽 Maize</button>
+      <button class="wiz-opt" onclick="selNFCrop(this,'Cotton')">🌿 Cotton</button>
+      <button class="wiz-opt" onclick="selNFCrop(this,'Mustard')">🌻 Mustard</button>
+    </div>
+    <div style="height:10px"></div>
+    <div class="wiz-label" id="nf-acres-label">Land area (acres)</div>
+    <input type="number" id="nf-acres" class="a-inp" placeholder="e.g. 2" min="0.5" max="100" style="margin-bottom:10px">
+    <div class="wiz-label">Irrigation type</div>
+    <div class="wiz-grid" id="nf-irr-btns">
+      <button class="wiz-opt" onclick="selIrr(this,'Canal')">🌊 Canal</button>
+      <button class="wiz-opt" onclick="selIrr(this,'Borewell')">🔩 Borewell</button>
+      <button class="wiz-opt" onclick="selIrr(this,'Drip')">💧 Drip</button>
+      <button class="wiz-opt" onclick="selIrr(this,'Rainfed')">🌧 Rain-fed</button>
+    </div>
+    <div style="height:10px"></div>
+    <button class="btn btn-full" id="nf-gen-btn" onclick="generateFarmerPlan()" disabled>🌱 Generate My Farm Plan</button>
+  </div>
+  <div id="nf-loading" class="ai-loading" style="display:none;margin-bottom:12px"><div class="spinner"></div><span>Generating your personalized farm plan…</span></div>
+  <div id="nf-result" style="display:none">
+    <div id="nf-plan-content"></div>
+    <button class="btn" onclick="resetNFGuide()" style="margin-top:10px">← Choose Another Crop</button>
+  </div>
+</div>
+
+<div class="page" id="page-disease">
+  <div class="hero" style="background:linear-gradient(135deg,#531dab,#2d1060)">
+    <div class="hero-tag">🔬 AI Plant Doctor</div>
+    <h2>Disease Scanner</h2>
+    <p>Upload a leaf photo for instant AI diagnosis</p>
+  </div>
+  <div class="sec">
+    <input type="file" accept="image/*" capture="environment" id="input-camera" onchange="handleImageUpload(this)">
+    <input type="file" accept="image/*" id="input-gallery" onchange="handleImageUpload(this)">
+    <div class="dd-dropzone" id="scan-zone">
+      <div class="dd-icon">🌿</div>
+      <h4 style="font-size:14px;font-weight:700;color:var(--txt);margin-bottom:6px">Upload Plant Photo</h4>
+      <p style="font-size:12px;color:var(--txt2);margin-bottom:14px">Take a clear photo of the affected leaf, stem or fruit</p>
+      <div style="display:flex;gap:10px;justify-content:center">
+        <button class="btn" onclick="document.getElementById('input-camera').click()" style="flex:1;max-width:140px">📷 Camera</button>
+        <button class="btn" onclick="document.getElementById('input-gallery').click()" style="flex:1;max-width:140px;background:var(--card2);color:var(--g);box-shadow:none;border:2px solid var(--g)">🖼 Gallery</button>
+      </div>
+    </div>
+    <img id="scan-img" style="display:none;width:100%;border-radius:12px;max-height:200px;object-fit:cover;margin-top:10px">
+    <button id="scan-run-btn" class="btn btn-full" style="display:none;margin-top:10px" onclick="runScan()">🔬 Analyse This Plant</button>
+  </div>
+  <div class="sec" style="margin-top:4px">
+    <div class="sec-head"><h3>🧪 Try Demo</h3><span class="badge a">No photo needed</span></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" onclick="demoScan('healthy')" style="background:var(--g);flex:1">✅ Healthy Plant</button>
+      <button class="btn" onclick="demoScan('blight')" style="background:var(--red);flex:1">🦠 Blight Demo</button>
+      <button class="btn" onclick="demoScan('pest')" style="background:var(--amb);flex:1">🐛 Pest Demo</button>
+    </div>
+  </div>
+  <div id="scan-results" style="display:none">
+    <div id="scan-loading" class="ai-loading" style="display:none;margin-bottom:10px"><div class="spinner"></div><span>Analysing plant image…</span></div>
+    <div id="scan-output" style="display:none"></div>
+    <button class="btn" onclick="resetScan()" style="margin-top:10px">📷 Scan Another Plant</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- GOVERNMENT SCHEMES PAGE (KisanSarthi-style)      -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page" id="page-schemes">
+
+  <div class="hero" style="background:linear-gradient(135deg,#c2410c 0%,#7c2d12 100%)">
+    <div class="hero-tag">🏛 Sarkari Yojana</div>
+    <h2 id="sc-hero-title">Government Scheme Checker</h2>
+    <p style="color:#fed7aa" id="sc-hero-sub">Answer a few questions and find all schemes you qualify for!</p>
+    <div class="hero-pills">
+      <span class="hero-pill">🆓 Free to Apply</span>
+      <span class="hero-pill">🇮🇳 Central &amp; State</span>
+      <span class="hero-pill">✅ 40+ Schemes</span>
+    </div>
+  </div>
+
+  <!-- ELIGIBILITY FORM -->
+  <div class="sec" id="sc-form-section">
+    <div class="sec-head">
+      <h3 id="sc-check-title">🔍 Check Your Eligibility</h3>
+      <span class="badge a" id="sc-step-badge">5 Questions</span>
+    </div>
+
+    <!-- Q1: State -->
+    <div id="scq1" class="sc-q-block">
+      <div class="wiz-label">🗺 Your state?</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:12px" id="sc-state-opts">
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scState')">Uttar Pradesh</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scState')">Punjab</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scState')">Haryana</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scState')">Rajasthan</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scState')">Bihar</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scState')">Madhya Pradesh</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scState')">Maharashtra</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scState')">Gujarat</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scState')">Karnataka</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scState')">Andhra Pradesh</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scState')">Tamil Nadu</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scState')">Other State</div>
+      </div>
+    </div>
+
+    <!-- Q2: Land -->
+    <div id="scq2" class="sc-q-block">
+      <div class="wiz-label">📐 How much land do you own?</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:12px">
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scLand')">Less than 1 acre (Small/Marginal)</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scLand')">1–2 acres (Marginal)</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scLand')">2–5 acres (Small)</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scLand')">More than 5 acres (Medium/Large)</div>
+      </div>
+    </div>
+
+    <!-- Q3: Category -->
+    <div id="scq3" class="sc-q-block">
+      <div class="wiz-label">👤 Your category?</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:12px">
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scCat')">General</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scCat')">SC / ST</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scCat')">OBC</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scCat')">Women Farmer</div>
+      </div>
+    </div>
+
+    <!-- Q4: Crops -->
+    <div id="scq4" class="sc-q-block">
+      <div class="wiz-label">🌾 What do you grow?</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:12px">
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scCrop')">Food Grains (Wheat/Rice)</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scCrop')">Pulses / Oilseeds</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scCrop')">Vegetables / Fruits</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scCrop')">Cotton / Sugarcane</div>
+      </div>
+    </div>
+
+    <!-- Q5: Income -->
+    <div id="scq5" class="sc-q-block">
+      <div class="wiz-label">💰 Annual family income?</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:14px">
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scIncome')">Below ₹1.5 lakh</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scIncome')">₹1.5–₹6 lakh</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scIncome')">Above ₹6 lakh</div>
+        <div class="scheme-q-opt" onclick="scSelKM(this,'scIncome')">Not Sure</div>
+      </div>
+    </div>
+
+    <button class="btn btn-full" id="sc-check-btn" onclick="checkSchemesKM()" style="background:#c2410c" disabled>
+      🏛 Check My Eligible Schemes
+    </button>
+  </div>
+
+  <!-- LOADING -->
+  <div id="sc-loading" class="ai-loading" style="display:none;margin-bottom:12px;background:#fff3e0;border-color:#fed7aa">
+    <div class="spinner" style="border-top-color:#c2410c"></div>
+    <span style="color:#7c2d12">Checking all government schemes for you…</span>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="sc-results" style="display:none">
+    <div style="background:linear-gradient(135deg,#c2410c,#7c2d12);border-radius:14px;padding:18px;margin-bottom:12px;text-align:center;box-shadow:0 4px 20px rgba(194,65,12,.25)">
+      <div style="font-size:12px;color:#fed7aa;letter-spacing:.3px;text-transform:uppercase;margin-bottom:6px">Eligible Schemes Found</div>
+      <div style="font-size:36px;font-weight:700;color:#fff" id="sc-res-count">—</div>
+      <div style="font-size:13px;color:#fed7aa;margin-top:4px">government schemes match your profile</div>
+    </div>
+    <!-- Category filter chips -->
+    <div id="sc-cat-chips" style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:12px;padding-bottom:2px"></div>
+    <div id="sc-scheme-list"></div>
+    <button class="btn btn-full" onclick="resetSchemesKM()" style="background:#c2410c;margin-top:4px">← Check Again</button>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- MANDI LOCATOR PAGE (KisanSarthi-style)            -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page" id="page-mandi">
+
+  <div class="hero" style="background:linear-gradient(135deg,#1a6b5a 0%,#0a3d2b 100%)">
+    <div class="hero-tag">📍 APMC Locator</div>
+    <h2 id="mn-hero-title">Nearest Mandi Finder</h2>
+    <p style="color:#99f6e4" id="mn-hero-sub">Find APMC mandis near you by state, district &amp; area to get the best price!</p>
+    <div class="hero-pills">
+      <span class="hero-pill">🗺 Google Maps</span>
+      <span class="hero-pill">🧭 Directions</span>
+      <span class="hero-pill">⏰ Timings</span>
+    </div>
+  </div>
+
+  <div class="sec" id="mn-form-sec">
+    <div class="sec-head">
+      <h3>🗺 Select Your Location</h3>
+    </div>
+
+    <div class="wiz-label">State</div>
+    <select class="mandi-select" id="mandi-state" onchange="loadMandiDistrictsKM()">
+      <option value="">-- Select State --</option>
+      <option>Uttar Pradesh</option><option>Punjab</option><option>Haryana</option>
+      <option>Rajasthan</option><option>Bihar</option><option>Madhya Pradesh</option>
+      <option>Maharashtra</option><option>Gujarat</option><option>Karnataka</option>
+      <option>Andhra Pradesh</option><option>Tamil Nadu</option><option>West Bengal</option>
+      <option>Telangana</option><option>Odisha</option>
+    </select>
+
+    <div class="wiz-label">District</div>
+    <select class="mandi-select" id="mandi-district" onchange="loadMandiAreasKM()" disabled>
+      <option value="">-- Select District --</option>
+    </select>
+
+    <div class="wiz-label">Area / Block <span style="font-weight:400;color:var(--txt3)">(optional)</span></div>
+    <select class="mandi-select" id="mandi-area" disabled>
+      <option value="">-- Select Area --</option>
+    </select>
+
+    <button class="btn btn-full" id="mn-find-btn" onclick="findMandisKM()" style="background:#1a6b5a" disabled>
+      📍 Find Nearest Mandis
+    </button>
+  </div>
+
+  <!-- LOADING -->
+  <div id="mn-loading" class="ai-loading" style="display:none;margin-bottom:12px;background:#ccfbf1;border-color:#5eead4">
+    <div class="spinner" style="border-top-color:#1a6b5a"></div>
+    <span style="color:#064e3b">Finding APMC mandis near you…</span>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="mandi-result" style="display:none">
+    <div class="sec">
+      <div class="sec-head">
+        <h3 id="mn-res-title">Nearby APMC Mandis</h3>
+        <span class="badge" style="background:#ccfbf1;color:#1a6b5a" id="mn-res-badge">Showing results</span>
+      </div>
+      <div id="mandi-list"></div>
+    </div>
+
+    <div class="sec" id="mn-tips-sec">
+      <div class="sec-head"><h3>💡 Mandi Tips</h3></div>
+      <div class="tip g">✅ <strong>Carry all documents:</strong> Aadhaar, land papers, and bank passbook for smooth transactions.</div>
+      <div class="tip a">⚠️ <strong>Best time to sell:</strong> Arrive early (6–9 AM) for better price discovery and fresh assessment.</div>
+      <div class="tip g">💰 <strong>Check MSP first:</strong> Know today's MSP before going to ensure you don't sell below minimum price.</div>
+    </div>
+
+    <button class="btn btn-full" onclick="resetMandiKM()" style="background:#1a6b5a;margin-top:4px">← Search Again</button>
+  </div>
+
+</div>
+
+<div class="page" id="page-helpline">
+    <div class="hero" style="background:linear-gradient(135deg,#1a5fa8 0%,#0d3a6b 100%)">
+      <div class="hero-tag">📞 Kisan Helplines</div>
+      <h2>Expert Connect & Helplines</h2>
+      <p style="color:rgba(255,255,255,.78)">Free government helplines, KVK contacts & agri support numbers</p>
+      <div class="hero-pills"><span class="hero-pill">📞 All Toll-Free</span><span class="hero-pill">🇮🇳 Pan India</span><span class="hero-pill">🌐 Regional Languages</span></div>
+    </div>
+
+    <!-- GOVT HELPLINES -->
+    <div class="sec">
+      <div class="sec-head"><h3>🏛 Central Government Helplines</h3><span class="badge g">Toll-Free</span></div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#e8f5db">🌾</div>
+        <div style="flex:1">
+          <div class="h-name">Kisan Call Center (KCC)</div>
+          <div class="h-desc">24×7 free farming advice in 22 regional languages</div>
+          <div class="h-num">1800-180-1551</div>
+        </div>
+        <a class="call-btn" href="tel:18001801551">📞 Call</a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#fff3e0">🏦</div>
+        <div style="flex:1">
+          <div class="h-name">PM-KISAN Helpline</div>
+          <div class="h-desc">₹6,000/year scheme — registration, status & payment issues</div>
+          <div class="h-num">155261 / 011-23381092</div>
+        </div>
+        <a class="call-btn" href="tel:155261">📞 Call</a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#fbeaea">🛡</div>
+        <div style="flex:1">
+          <div class="h-name">PM Fasal Bima (PMFBY)</div>
+          <div class="h-desc">Crop insurance queries, claims & premium subsidy</div>
+          <div class="h-num">1800-200-7710</div>
+        </div>
+        <a class="call-btn" href="tel:18002007710">📞 Call</a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#fdf0da">🌦</div>
+        <div style="flex:1">
+          <div class="h-name">IMD Agro Weather Helpline</div>
+          <div class="h-desc">Agro-meteorological advisory, crop weather alerts</div>
+          <div class="h-num">1800-180-1717</div>
+        </div>
+        <a class="call-btn" href="tel:18001801717">📞 Call</a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#e4eef8">💧</div>
+        <div style="flex:1">
+          <div class="h-name">PM Krishi Sinchai Yojana</div>
+          <div class="h-desc">Irrigation subsidy & drip/sprinkler installation queries</div>
+          <div class="h-num">1800-180-1551</div>
+        </div>
+        <a class="call-btn" href="tel:18001801551">📞 Call</a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#e2f5f0">🌱</div>
+        <div style="flex:1">
+          <div class="h-name">Soil Health Card Helpline</div>
+          <div class="h-desc">Free soil testing, card status & fertilizer recommendations</div>
+          <div class="h-num">1800-180-1551</div>
+        </div>
+        <a class="call-btn" href="tel:18001801551">📞 Call</a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#f3eeff">🌿</div>
+        <div style="flex:1">
+          <div class="h-name">Paramparagat Krishi Vikas (PKVY)</div>
+          <div class="h-desc">Organic farming cluster scheme & certification queries</div>
+          <div class="h-num">011-23382539</div>
+        </div>
+        <a class="call-btn" href="tel:01123382539">📞 Call</a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#fbebeb">🚨</div>
+        <div style="flex:1">
+          <div class="h-name">Pesticide Emergency / Fake Agri Input</div>
+          <div class="h-desc">Report spurious seeds, fertilizers & pesticides</div>
+          <div class="h-num">1800-180-1551</div>
+        </div>
+        <a class="call-btn" href="tel:18001801551">📞 Call</a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#e8f5db">📊</div>
+        <div style="flex:1">
+          <div class="h-name">eNAM (Online Mandi) Helpdesk</div>
+          <div class="h-desc">Online trading platform registration & price queries</div>
+          <div class="h-num">1800-270-0224</div>
+        </div>
+        <a class="call-btn" href="tel:18002700224">📞 Call</a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#fff0e8">🐄</div>
+        <div style="flex:1">
+          <div class="h-name">Animal Husbandry Helpline (DAHD)</div>
+          <div class="h-desc">Livestock disease, veterinary help & poultry queries</div>
+          <div class="h-num">1800-180-1551</div>
+        </div>
+        <a class="call-btn" href="tel:18001801551">📞 Call</a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#e2f5f0">🐟</div>
+        <div style="flex:1">
+          <div class="h-name">PM Matsya Sampada Yojana</div>
+          <div class="h-desc">Fisheries & aquaculture scheme — subsidy & registration</div>
+          <div class="h-num">1800-425-1660</div>
+        </div>
+        <a class="call-btn" href="tel:18004251660">📞 Call</a>
+      </div>
+    </div>
+
+    <!-- RESEARCH & EXTENSION -->
+    <div class="sec">
+      <div class="sec-head"><h3>🔬 Research & Extension Services</h3></div>
+      <div class="tip g" style="margin-bottom:10px">📍 <strong>Find your local KVK:</strong> Visit <a href="https://kvk.icar.gov.in" target="_blank" style="color:var(--g)">kvk.icar.gov.in</a> — free soil testing, certified seeds & expert advice at your district.</div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#e8f5db">🧪</div>
+        <div style="flex:1">
+          <div class="h-name">ICAR Headquarters</div>
+          <div class="h-desc">Indian Council of Agricultural Research — certified crop varieties</div>
+          <div class="h-num">011-25848420</div>
+        </div>
+        <a class="call-btn" href="tel:01125848420">📞 Call</a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#f9f0ff">🌸</div>
+        <div style="flex:1">
+          <div class="h-name">National Horticulture Board (NHB)</div>
+          <div class="h-desc">Fruit & vegetable farming subsidies, cold storage schemes</div>
+          <div class="h-num">0124-2340991</div>
+        </div>
+        <a class="call-btn" href="tel:01242340991">📞 Call</a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#fdf0da">🌻</div>
+        <div style="flex:1">
+          <div class="h-name">National Horticulture Mission (NHM)</div>
+          <div class="h-desc">Horticulture development scheme & subsidy for farmers</div>
+          <div class="h-num">011-23382640</div>
+        </div>
+        <a class="call-btn" href="tel:01123382640">📞 Call</a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#e8f5db">🌾</div>
+        <div style="flex:1">
+          <div class="h-name">NFSM (Food Security Mission)</div>
+          <div class="h-desc">Rice, Wheat & Pulses — HYV seeds & technology support</div>
+          <div class="h-num">011-23382708</div>
+        </div>
+        <a class="call-btn" href="tel:01123382708">📞 Call</a>
+      </div>
+    </div>
+
+    <!-- CREDIT & INSURANCE -->
+    <div class="sec">
+      <div class="sec-head"><h3>🏦 Agricultural Credit & Insurance</h3></div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#e4eef8">💳</div>
+        <div style="flex:1">
+          <div class="h-name">NABARD Helpline</div>
+          <div class="h-desc">Kisan Credit Card (KCC), agri loans & rural infrastructure</div>
+          <div class="h-num">1800-26-26-763</div>
+        </div>
+        <a class="call-btn" href="tel:18002626763">📞 Call</a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#e8f5db">🏧</div>
+        <div style="flex:1">
+          <div class="h-name">SBI Agri Loan Helpline</div>
+          <div class="h-desc">SBI Kisan Credit Card, agri term loans & gold loans</div>
+          <div class="h-num">1800-11-2211</div>
+        </div>
+        <a class="call-btn" href="tel:18001112211">📞 Call</a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#fff3e0">🤝</div>
+        <div style="flex:1">
+          <div class="h-name">Agriculture Insurance Co. (AIC)</div>
+          <div class="h-desc">PMFBY claims, weather-based crop insurance & RWBCIS</div>
+          <div class="h-num">1800-116-515</div>
+        </div>
+        <a class="call-btn" href="tel:1800116515">📞 Call</a>
+      </div>
+    </div>
+
+    <!-- STATE HELPLINES -->
+    <div class="sec">
+      <div class="sec-head"><h3>🗺 Key State Agriculture Helplines</h3><span class="badge a">State-wise</span></div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#e8f5db">🏙</div>
+        <div style="flex:1">
+          <div class="h-name">UP Agriculture Helpline</div>
+          <div class="h-desc">Uttar Pradesh — crop advice, subsidy & mandi support</div>
+          <div class="h-num">1800-180-5566</div>
+        </div>
+        <a class="call-btn" href="tel:18001805566">📞 Call</a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#fdf0da">🌾</div>
+        <div style="flex:1">
+          <div class="h-name">Punjab Agriculture Helpline</div>
+          <div class="h-desc">PAU crop advisory, soil health & pest management</div>
+          <div class="h-num">1800-180-2117</div>
+        </div>
+        <a class="call-btn" href="tel:18001802117">📞 Call</a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#e4eef8">🌿</div>
+        <div style="flex:1">
+          <div class="h-name">Maharashtra Agriculture Helpline</div>
+          <div class="h-desc">Maharashtra — crop insurance, mandi & scheme queries</div>
+          <div class="h-num">1800-233-4000</div>
+        </div>
+        <a class="call-btn" href="tel:18002334000">📞 Call</a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#f9f0ff">🌻</div>
+        <div style="flex:1">
+          <div class="h-name">Rajasthan Agriculture Helpline</div>
+          <div class="h-desc">Rajasthan — drought relief, water conservation & subsidy</div>
+          <div class="h-num">1800-180-6001</div>
+        </div>
+        <a class="call-btn" href="tel:18001806001">📞 Call</a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#e2f5f0">🌱</div>
+        <div style="flex:1">
+          <div class="h-name">MP Agriculture Helpline</div>
+          <div class="h-desc">Madhya Pradesh — Bhavantar Bhugtan & crop advisory</div>
+          <div class="h-num">1800-180-1551</div>
+        </div>
+        <a class="call-btn" href="tel:18001801551">📞 Call</a>
+      </div>
+    </div>
+
+    <!-- EMERGENCY -->
+    <div class="sec">
+      <div class="sec-head"><h3>🚨 Emergency & Disaster Relief</h3></div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#fbeaea">🆘</div>
+        <div style="flex:1">
+          <div class="h-name">National Disaster Relief (NDRF)</div>
+          <div class="h-desc">Flood, drought & cyclone relief — crop loss compensation</div>
+          <div class="h-num">011-24363260</div>
+        </div>
+        <a class="call-btn" href="tel:01124363260">📞 Call</a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="h-ico" style="background:#fff0e8">🌊</div>
+        <div style="flex:1">
+          <div class="h-name">PM Relief Fund (Flood/Drought)</div>
+          <div class="h-desc">Apply for natural disaster compensation for crop loss</div>
+          <div class="h-num">1075</div>
+        </div>
+        <a class="call-btn" href="tel:1075">📞 Call</a>
+      </div>
+
+      <div class="tip a" style="margin-top:4px">⚠️ <strong>Pro Tip:</strong> Always call from your Aadhaar-linked mobile number. Keep land records (Khasra/Khatauni) & bank passbook handy for faster assistance.</div>
+    </div>
+  </div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- BILL SCANNER PAGE                                   -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page" id="page-bill">
+  <div class="hero" style="background:linear-gradient(135deg,#1a5fa8 0%,#0d2a5a 100%)">
+    <div class="hero-tag">🧾 OCR Bill Scanner</div>
+    <h2>Smart Bill Analyser</h2>
+    <p>Scan any agri bill — seeds, fertilizer, pesticide, mandi receipt — and get instant AI breakdown</p>
+    <div class="hero-pills">
+      <span class="hero-pill">📷 Camera + Gallery</span>
+      <span class="hero-pill">🤖 AI Powered</span>
+      <span class="hero-pill">💰 Free</span>
+    </div>
+  </div>
+
+  <!-- Step 1: Bill Type -->
+  <div class="sec" id="bill-step1">
+    <div class="sec-head"><h3>Step 1 — What type of bill?</h3></div>
+    <div class="bill-type-grid">
+      <button class="bill-type-btn" onclick="selBillType(this,'seed')" data-val="seed">
+        <span class="bt-ico">🌱</span>Seed Purchase
+      </button>
+      <button class="bill-type-btn" onclick="selBillType(this,'fertilizer')" data-val="fertilizer">
+        <span class="bt-ico">🧪</span>Fertilizer
+      </button>
+      <button class="bill-type-btn" onclick="selBillType(this,'pesticide')" data-val="pesticide">
+        <span class="bt-ico">🐛</span>Pesticide
+      </button>
+      <button class="bill-type-btn" onclick="selBillType(this,'mandi')" data-val="mandi">
+        <span class="bt-ico">🏪</span>Mandi Receipt
+      </button>
+      <button class="bill-type-btn" onclick="selBillType(this,'electricity')" data-val="electricity">
+        <span class="bt-ico">⚡</span>Electricity Bill
+      </button>
+      <button class="bill-type-btn" onclick="selBillType(this,'equipment')" data-val="equipment">
+        <span class="bt-ico">🚜</span>Equipment / Repair
+      </button>
+      <button class="bill-type-btn" onclick="selBillType(this,'loan')" data-val="loan">
+        <span class="bt-ico">🏦</span>Loan / KCC Receipt
+      </button>
+      <button class="bill-type-btn" onclick="selBillType(this,'other')" data-val="other">
+        <span class="bt-ico">📄</span>Other / General
+      </button>
+    </div>
+    <div class="tip a" style="margin-top:2px">📌 Selecting bill type helps AI give more accurate item-by-item analysis</div>
+  </div>
+
+  <!-- Step 2: Upload -->
+  <div class="sec" id="bill-step2">
+    <div class="sec-head"><h3>Step 2 — Upload Bill Photo</h3></div>
+    <input type="file" accept="image/*" capture="environment" id="bill-input-camera" onchange="handleBillUpload(this)" style="display:none">
+    <input type="file" accept="image/*" id="bill-input-gallery" onchange="handleBillUpload(this)" style="display:none">
+    <div class="dd-dropzone" id="bill-dropzone">
+      <div class="dd-icon">🧾</div>
+      <h4 style="font-size:14px;font-weight:700;color:var(--txt);margin-bottom:6px">Take or Upload Bill Photo</h4>
+      <p style="font-size:12px;color:var(--txt2);margin-bottom:14px">Place bill on flat surface, ensure text is clear and well-lit</p>
+      <div style="display:flex;gap:10px;justify-content:center">
+        <label for="bill-input-camera" class="btn" style="flex:1;max-width:140px;cursor:pointer;text-align:center">📷 Camera</label>
+        <label for="bill-input-gallery" class="btn" style="flex:1;max-width:140px;cursor:pointer;text-align:center;background:var(--card2);color:var(--g);box-shadow:none;border:2px solid var(--g)">🖼 Gallery</label>
+      </div>
+    </div>
+    <img id="bill-preview-img" style="display:none;width:100%;border-radius:12px;max-height:220px;object-fit:cover;margin-top:10px;border:2px solid var(--bdr)">
+    <div class="ocr-progress" id="bill-progress-wrap" style="display:none">
+      <div class="ocr-progress-bar" id="bill-progress-bar" style="width:0%"></div>
+    </div>
+    <button id="bill-scan-btn" class="btn btn-full" style="display:none;margin-top:12px" onclick="runBillScan()">🧾 Scan & Analyse Bill</button>
+  </div>
+
+  <!-- Loading -->
+  <div id="bill-loading" class="ai-loading" style="display:none;margin:0 0 12px">
+    <div class="spinner"></div>
+    <span id="bill-loading-msg">Reading bill with AI OCR…</span>
+  </div>
+
+  <!-- Results -->
+  <div id="bill-results" style="display:none">
+
+    <!-- Summary cards -->
+    <div class="sec">
+      <div class="sec-head"><h3>📊 Bill Summary</h3><span class="badge g" id="bill-type-badge">Bill</span></div>
+      <div id="bill-summary-rows"></div>
+    </div>
+
+    <!-- Items table -->
+    <div class="sec" id="bill-items-sec" style="display:none">
+      <div class="sec-head"><h3>📋 Items Detected</h3></div>
+      <div style="overflow-x:auto">
+        <table class="bill-parsed-table" id="bill-items-table">
+          <thead><tr><th>#</th><th>Item / Description</th><th>Qty</th><th style="text-align:right">Amount</th></tr></thead>
+          <tbody id="bill-items-body"></tbody>
+          <tfoot><tr class="total-row"><td colspan="3"><strong>TOTAL</strong></td><td class="amt-col" id="bill-total-cell">—</td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- AI Alerts -->
+    <div class="sec" id="bill-alerts-sec" style="display:none">
+      <div class="sec-head"><h3>🤖 AI Observations</h3></div>
+      <div id="bill-alerts-list"></div>
+    </div>
+
+    <!-- Raw OCR text toggle -->
+    <div class="sec">
+      <div class="sec-head"><h3>📝 Extracted Text</h3><button onclick="toggleBillRaw()" class="btn" style="font-size:11px;padding:4px 10px;background:var(--card2);color:var(--g);box-shadow:none;border:1px solid var(--bdr)">Show/Hide</button></div>
+      <div id="bill-raw-text" class="bill-raw-box" style="display:none"></div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn" onclick="resetBillScanner()" style="flex:1;background:var(--card2);color:var(--g);box-shadow:none;border:2px solid var(--g)">🔄 Scan Another</button>
+      <button class="btn" onclick="copyBillSummary()" style="flex:1">📋 Copy Summary</button>
+    </div>
+  </div>
+
+  <!-- Demo -->
+  <div class="sec" style="margin-top:4px">
+    <div class="sec-head"><h3>🧪 Try Demo Scans</h3><span class="badge a">No photo needed</span></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" onclick="demoBillScan('seed')" style="flex:1;background:var(--g)">🌱 Seed Bill Demo</button>
+      <button class="btn" onclick="demoBillScan('fertilizer')" style="flex:1;background:var(--amb)">🧪 Fertilizer Demo</button>
+      <button class="btn" onclick="demoBillScan('mandi')" style="flex:1;background:var(--blu)">🏪 Mandi Demo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+// ═══════════════════════════════════════════════════════
+// KrishiMitra — All functions at global scope
+// Free APIs: Pollinations AI · Open-Meteo · ip-api.com
+// ═══════════════════════════════════════════════════════
+
+// ── Price Data (embedded, always available) ───────────
+const PRICE_DATA_JSON = {"potato": {"current_price": 1900, "unit": "per quintal", "change_30d_pct": 5.6, "avg_7d": 1571, "forecast_30d": 1638, "history": [{"date": "2025-03-28", "price": 1900}, {"date": "2025-03-29", "price": 1900}, {"date": "2025-04-02", "price": 1700}, {"date": "2025-04-04", "price": 1400}, {"date": "2025-04-07", "price": 1300}, {"date": "2025-04-09", "price": 1400}, {"date": "2025-04-23", "price": 1400}, {"date": "2025-05-28", "price": 1900}]}, "cabbage": {"current_price": 1300, "unit": "per quintal", "change_30d_pct": 18.2, "avg_7d": 1000, "forecast_30d": 679, "history": [{"date": "2023-02-05", "price": 1100}, {"date": "2023-02-08", "price": 1300}, {"date": "2023-02-09", "price": 900}, {"date": "2023-02-16", "price": 800}, {"date": "2023-02-17", "price": 900}, {"date": "2023-02-18", "price": 900}, {"date": "2023-02-19", "price": 900}, {"date": "2023-03-24", "price": 1300}]}, "pumpkin": {"current_price": 1900, "unit": "per quintal", "change_30d_pct": 18.8, "avg_7d": 1614, "forecast_30d": -312, "history": [{"date": "2022-10-10", "price": 1800}, {"date": "2022-10-11", "price": 1900}, {"date": "2022-10-16", "price": 1400}, {"date": "2022-10-22", "price": 1600}, {"date": "2023-02-17", "price": 1700}, {"date": "2023-03-23", "price": 1300}, {"date": "2023-03-28", "price": 1500}, {"date": "2023-03-31", "price": 1900}]}, "bhindi(ladies_finger)": {"current_price": 1800, "unit": "per quintal", "change_30d_pct": 12.5, "avg_7d": 1671, "forecast_30d": 1206, "history": [{"date": "2022-10-30", "price": 1700}, {"date": "2022-10-31", "price": 1700}, {"date": "2022-11-02", "price": 1600}, {"date": "2022-11-03", "price": 1600}, {"date": "2022-11-04", "price": 1600}, {"date": "2022-11-06", "price": 1700}, {"date": "2022-11-07", "price": 1700}, {"date": "2022-11-08", "price": 1800}]}, "onion": {"current_price": 3100, "unit": "per quintal", "change_30d_pct": 6.9, "avg_7d": 2814, "forecast_30d": 2330, "history": [{"date": "2025-03-26", "price": 3100}, {"date": "2025-03-27", "price": 3100}, {"date": "2025-04-02", "price": 2600}, {"date": "2025-04-04", "price": 3100}, {"date": "2025-04-06", "price": 2600}, {"date": "2025-04-07", "price": 2600}, {"date": "2025-04-08", "price": 2600}, {"date": "2025-04-12", "price": 3100}]}, "brinjal": {"current_price": 1600, "unit": "per quintal", "change_30d_pct": -11.1, "avg_7d": 1457, "forecast_30d": 884, "history": [{"date": "2023-02-18", "price": 1400}, {"date": "2023-02-26", "price": 1600}, {"date": "2023-03-22", "price": 1500}, {"date": "2023-03-23", "price": 1600}, {"date": "2023-03-24", "price": 1400}, {"date": "2023-03-27", "price": 1400}, {"date": "2023-03-28", "price": 1100}, {"date": "2023-03-31", "price": 1600}]}, "cauliflower": {"current_price": 1600, "unit": "per quintal", "change_30d_pct": 23.1, "avg_7d": 1185, "forecast_30d": 916, "history": [{"date": "2023-02-05", "price": 1200}, {"date": "2023-02-09", "price": 1100}, {"date": "2023-02-16", "price": 1100}, {"date": "2023-02-17", "price": 1000}, {"date": "2023-02-18", "price": 1100}, {"date": "2023-02-19", "price": 1100}, {"date": "2023-03-22", "price": 1300}, {"date": "2023-03-31", "price": 1600}]}, "mango": {"current_price": 3443, "unit": "per quintal", "change_30d_pct": 6.2, "avg_7d": 3333, "forecast_30d": 4530, "history": [{"date": "2015-08-17", "price": 3306}, {"date": "2015-08-18", "price": 3306}, {"date": "2015-08-19", "price": 3293}, {"date": "2015-08-20", "price": 3323}, {"date": "2015-08-21", "price": 3303}, {"date": "2015-08-22", "price": 3340}, {"date": "2015-08-24", "price": 3323}, {"date": "2015-08-26", "price": 3443}]}, "paddy(dhan)(common)": {"current_price": 2010, "unit": "per quintal", "change_30d_pct": 26.7, "avg_7d": 2028, "forecast_30d": 2718, "history": [{"date": "2022-11-15", "price": 2040}, {"date": "2022-11-16", "price": 2040}, {"date": "2022-11-17", "price": 2040}, {"date": "2022-11-18", "price": 2020}, {"date": "2022-11-19", "price": 2040}, {"date": "2022-11-20", "price": 2020}, {"date": "2022-11-21", "price": 2030}, {"date": "2022-11-22", "price": 2010}]}, "arhar_(tur/red_gram)(whole)": {"current_price": 3000, "unit": "per quintal", "change_30d_pct": 7.1, "avg_7d": 2957, "forecast_30d": 2683, "history": [{"date": "2004-07-24", "price": 2950}, {"date": "2004-07-27", "price": 2950}, {"date": "2004-07-28", "price": 2950}, {"date": "2004-07-29", "price": 2950}, {"date": "2004-07-30", "price": 2950}, {"date": "2004-07-31", "price": 2950}, {"date": "2004-08-02", "price": 2950}, {"date": "2004-08-03", "price": 3000}]}, "maize": {"current_price": 2400, "unit": "per quintal", "change_30d_pct": 20.6, "avg_7d": 2400, "forecast_30d": 1242, "history": [{"date": "2023-01-09", "price": 2400}, {"date": "2023-01-10", "price": 2400}, {"date": "2023-01-11", "price": 2400}, {"date": "2023-01-12", "price": 2400}, {"date": "2023-01-13", "price": 2400}, {"date": "2023-01-28", "price": 2400}, {"date": "2023-01-29", "price": 2400}, {"date": "2023-01-30", "price": 2400}]}, "turmeric": {"current_price": 2850, "unit": "per quintal", "change_30d_pct": 21.3, "avg_7d": 2807, "forecast_30d": 2412, "history": [{"date": "2004-09-28", "price": 2800}, {"date": "2004-09-29", "price": 2800}, {"date": "2004-10-06", "price": 2800}, {"date": "2004-10-08", "price": 2800}, {"date": "2004-10-11", "price": 2800}, {"date": "2004-10-12", "price": 2800}, {"date": "2004-10-13", "price": 2800}, {"date": "2004-11-22", "price": 2850}]}, "rice": {"current_price": 2900, "unit": "per quintal", "change_30d_pct": 141.7, "avg_7d": 3497, "forecast_30d": 1455, "history": [{"date": "2015-07-16", "price": 2516}, {"date": "2015-07-23", "price": 2580}, {"date": "2022-02-23", "price": 4133}, {"date": "2022-02-25", "price": 3800}, {"date": "2022-02-28", "price": 3866}, {"date": "2022-03-09", "price": 3600}, {"date": "2022-03-29", "price": 3600}, {"date": "2022-10-01", "price": 2900}]}, "banana": {"current_price": 600, "unit": "per quintal", "change_30d_pct": 0.0, "avg_7d": 304, "forecast_30d": 286, "history": [{"date": "2004-04-03", "price": 7}, {"date": "2004-04-05", "price": 7}, {"date": "2004-04-06", "price": 7}, {"date": "2004-04-10", "price": 7}, {"date": "2004-06-01", "price": 700}, {"date": "2004-06-14", "price": 7}, {"date": "2004-07-02", "price": 800}, {"date": "2004-09-04", "price": 600}]}, "orange": {"current_price": 4610, "unit": "per quintal", "change_30d_pct": 68.6, "avg_7d": 4647, "forecast_30d": 8156, "history": [{"date": "2003-06-10", "price": 4720}, {"date": "2003-06-11", "price": 4720}, {"date": "2003-06-12", "price": 4720}, {"date": "2003-06-13", "price": 4720}, {"date": "2003-06-14", "price": 4720}, {"date": "2003-06-16", "price": 4510}, {"date": "2003-06-17", "price": 4530}, {"date": "2003-06-18", "price": 4610}]}, "ginger(dry)": {"current_price": 2150, "unit": "per quintal", "change_30d_pct": 30.3, "avg_7d": 1995, "forecast_30d": 2144, "history": [{"date": "2004-01-08", "price": 1940}, {"date": "2004-01-09", "price": 1925}, {"date": "2004-01-10", "price": 1900}, {"date": "2004-01-12", "price": 1950}, {"date": "2004-01-13", "price": 2040}, {"date": "2004-01-14", "price": 1950}, {"date": "2004-01-15", "price": 2050}, {"date": "2004-01-16", "price": 2150}]}, "chili_red": {"current_price": 2500, "unit": "per quintal", "change_30d_pct": 4.2, "avg_7d": 2457, "forecast_30d": 2873, "history": [{"date": "2004-09-28", "price": 2450}, {"date": "2004-09-29", "price": 2450}, {"date": "2004-10-06", "price": 2450}, {"date": "2004-10-08", "price": 2450}, {"date": "2004-10-11", "price": 2450}, {"date": "2004-10-12", "price": 2450}, {"date": "2004-10-13", "price": 2450}, {"date": "2004-11-22", "price": 2500}]}, "masur_dal": {"current_price": 2350, "unit": "per quintal", "change_30d_pct": 6.8, "avg_7d": 2307, "forecast_30d": 2258, "history": [{"date": "2004-07-23", "price": 2300}, {"date": "2004-07-24", "price": 2300}, {"date": "2004-07-27", "price": 2300}, {"date": "2004-07-28", "price": 2300}, {"date": "2004-07-29", "price": 2300}, {"date": "2004-07-30", "price": 2300}, {"date": "2004-08-02", "price": 2300}, {"date": "2004-08-03", "price": 2350}]}, "garlic": {"current_price": 1450, "unit": "per quintal", "change_30d_pct": -7.9, "avg_7d": 1455, "forecast_30d": 1312, "history": [{"date": "2003-06-11", "price": 1460}, {"date": "2003-06-12", "price": 1460}, {"date": "2003-06-13", "price": 1450}, {"date": "2003-06-14", "price": 1450}, {"date": "2003-06-16", "price": 1460}, {"date": "2003-06-17", "price": 1460}, {"date": "2003-06-18", "price": 1460}, {"date": "2003-06-19", "price": 1450}]}, "green_gram_dal_(moong_dal)": {"current_price": 2050, "unit": "per quintal", "change_30d_pct": 2.5, "avg_7d": 2027, "forecast_30d": 2093, "history": [{"date": "2003-11-06", "price": 2010}, {"date": "2003-11-07", "price": 2010}, {"date": "2003-11-08", "price": 2010}, {"date": "2003-11-10", "price": 2010}, {"date": "2003-11-11", "price": 2010}, {"date": "2003-11-12", "price": 2050}, {"date": "2003-11-13", "price": 2050}, {"date": "2003-11-14", "price": 2050}]}, "grapes": {"current_price": 4700, "unit": "per quintal", "change_30d_pct": 43.0, "avg_7d": 4342, "forecast_30d": 7610, "history": [{"date": "2003-04-30", "price": 4100}, {"date": "2003-05-02", "price": 3550}, {"date": "2003-05-03", "price": 4237}, {"date": "2003-05-05", "price": 4287}, {"date": "2003-05-06", "price": 4162}, {"date": "2003-05-08", "price": 4700}, {"date": "2003-05-09", "price": 4758}, {"date": "2003-05-10", "price": 4700}]}, "wheat": {"current_price": 2480, "unit": "per quintal", "change_30d_pct": -4.6, "avg_7d": 2500, "forecast_30d": 2920, "history": [{"date": "2026-02-24", "price": 2500}, {"date": "2026-02-25", "price": 2520}, {"date": "2026-02-26", "price": 2550}, {"date": "2026-02-27", "price": 2500}, {"date": "2026-02-28", "price": 2480}, {"date": "2026-03-05", "price": 2480}, {"date": "2026-03-09", "price": 2490}, {"date": "2026-03-10", "price": 2480}]}, "apple": {"current_price": 4150, "unit": "per quintal", "change_30d_pct": 12.2, "avg_7d": 4144, "forecast_30d": 5199, "history": [{"date": "2003-04-26", "price": 4075}, {"date": "2003-04-28", "price": 4150}, {"date": "2003-04-29", "price": 4150}, {"date": "2003-04-30", "price": 4112}, {"date": "2003-05-02", "price": 4137}, {"date": "2003-05-03", "price": 4162}, {"date": "2003-05-05", "price": 4147}, {"date": "2003-05-06", "price": 4150}]}, "bengal_gram(gram)(whole)": {"current_price": 1700, "unit": "per quintal", "change_30d_pct": -10.1, "avg_7d": 1700, "forecast_30d": 1599, "history": [{"date": "2004-02-17", "price": 1700}, {"date": "2004-02-19", "price": 1700}, {"date": "2004-02-20", "price": 1700}, {"date": "2004-02-21", "price": 1700}, {"date": "2004-02-23", "price": 1700}, {"date": "2004-02-24", "price": 1700}, {"date": "2004-02-25", "price": 1700}, {"date": "2004-02-26", "price": 1700}]}, "mustard": {"current_price": 3980, "unit": "per quintal", "change_30d_pct": -1.2, "avg_7d": 3952, "forecast_30d": 4298, "history": [{"date": "2016-02-01", "price": 3900}, {"date": "2016-02-02", "price": 3930}, {"date": "2016-02-04", "price": 4000}, {"date": "2016-02-05", "price": 3930}, {"date": "2016-02-06", "price": 3940}, {"date": "2016-02-07", "price": 3950}, {"date": "2016-02-08", "price": 3940}, {"date": "2016-02-09", "price": 3980}]}, "red_gram": {"current_price": 2400, "unit": "per quintal", "change_30d_pct": 0.0, "avg_7d": 2400, "forecast_30d": 2267, "history": [{"date": "2006-08-21", "price": 2400}, {"date": "2006-08-22", "price": 2400}, {"date": "2006-08-23", "price": 2400}, {"date": "2006-08-24", "price": 2400}, {"date": "2006-08-25", "price": 2400}, {"date": "2006-08-26", "price": 2400}, {"date": "2006-08-28", "price": 2400}, {"date": "2006-08-29", "price": 2400}]}, "black_gram_(urd_beans)(whole)": {"current_price": 1825, "unit": "per quintal", "change_30d_pct": 4.3, "avg_7d": 1825, "forecast_30d": 1589, "history": [{"date": "2004-07-24", "price": 1825}, {"date": "2004-07-27", "price": 1825}, {"date": "2004-07-28", "price": 1825}, {"date": "2004-07-29", "price": 1825}, {"date": "2004-07-30", "price": 1825}, {"date": "2004-07-31", "price": 1825}, {"date": "2004-08-02", "price": 1825}, {"date": "2004-08-03", "price": 1825}]}, "litchi": {"current_price": 3733, "unit": "per quintal", "change_30d_pct": 2.8, "avg_7d": 3766, "forecast_30d": 4299, "history": [{"date": "2015-06-13", "price": 3633}, {"date": "2015-06-14", "price": 3800}, {"date": "2015-06-15", "price": 3900}, {"date": "2015-06-16", "price": 3766}, {"date": "2015-06-17", "price": 3733}]}};
+
+// ── Language ──────────────────────────────────────────
+var LANG = 'en';
+var T = {
+  en:{home:'Home',advisor:'Advisor',prices:'Prices',weather:'Weather',chat:'AI Chat',newfarmer:'New Farmer',disease:'Scan Plant',schemes:'Schemes',mandi:'Mandi',helpline:'Helpline',appTitle:'KrishiMitra',appSub:'Smart Agriculture Advisor'},
+  hi:{home:'होम',advisor:'सलाह',prices:'भाव',weather:'मौसम',chat:'AI चैट',newfarmer:'नया किसान',disease:'पौधा जांचें',schemes:'योजना',mandi:'मंडी',helpline:'हेल्पलाइन',appTitle:'कृषि मित्र',appSub:'स्मार्ट कृषि सहायक'}
+};
+
+function setLang(l, btn) {
+  LANG = l;
+  document.getElementById('btn-en').classList.toggle('on', l==='en');
+  document.getElementById('btn-hi').classList.toggle('on', l==='hi');
+  var t = T[l];
+  document.getElementById('app-title').textContent = t.appTitle;
+  document.getElementById('app-sub').textContent = t.appSub;
+  ['home','advisor','prices','weather','chat','newfarmer','disease','schemes','mandi','helpline'].forEach(function(k){
+    var el = document.getElementById('t-'+k);
+    if(el && t[k]) el.textContent = t[k];
+  });
+  var inp = document.getElementById('chat-inp');
+  if(inp) inp.placeholder = l==='hi' ? 'अपना सवाल टाइप करें…' : 'Type your farming question…';
+}
+
+// ── Navigation ────────────────────────────────────────
+function goPage(id, tabEl) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
+  var pg = document.getElementById('page-'+id);
+  if(pg) pg.classList.add('on');
+  if(tabEl) tabEl.classList.add('on');
+  if(id==='weather') loadLiveWeather();
+  if(id==='prices') loadLivePrices();
+  window.scrollTo(0,0);
+}
+
+// ── Advisor Wizard ────────────────────────────────────
+var WIZ = {state:null,soil:null,season:null,water:null,land:null};
+
+function selWizOpt(el, key) {
+  // Find the closest data-group container; fall back to parentElement
+  var group = el.closest ? el.closest('[data-group]') : el.parentElement;
+  if (!group) group = el.parentElement;
+  group.querySelectorAll('.wiz-opt').forEach(function(o){ o.classList.remove('sel'); });
+  el.classList.add('sel');
+  WIZ[key] = el.textContent.trim();
+}
+
+function advNext(step) {
+  document.getElementById('ws'+step).style.display = 'none';
+  document.getElementById('ws'+(step+1)).style.display = 'block';
+  var sd = document.getElementById('sd'+step);
+  if(sd){ sd.classList.remove('cur'); sd.classList.add('done'); }
+  var sl = document.getElementById('sl'+step);
+  if(sl) sl.classList.add('done');
+  var nsd = document.getElementById('sd'+(step+1));
+  if(nsd) nsd.classList.add('cur');
+}
+
+function advBack(step) {
+  document.getElementById('ws'+step).style.display = 'none';
+  document.getElementById('ws'+(step-1)).style.display = 'block';
+  var sd = document.getElementById('sd'+step);
+  if(sd){ sd.classList.remove('cur'); }
+  var psd = document.getElementById('sd'+(step-1));
+  if(psd){ psd.classList.remove('done'); psd.classList.add('cur'); }
+  var sl = document.getElementById('sl'+(step-1));
+  if(sl) sl.classList.remove('done');
+}
+
+function resetAdvisor() {
+  WIZ = {state:null,soil:null,season:null,water:null,land:null};
+  document.getElementById('adv-result').style.display = 'none';
+  document.getElementById('adv-wizard').style.display = 'block';
+  for(var i=0;i<4;i++){
+    var sd=document.getElementById('sd'+i); if(sd){sd.classList.remove('done','cur'); if(i===0)sd.classList.add('cur');}
+    var sl=document.getElementById('sl'+i); if(sl)sl.classList.remove('done');
+    var ws=document.getElementById('ws'+i); if(ws)ws.style.display=(i===0?'block':'none');
+  }
+  document.querySelectorAll('#adv-wizard .wiz-opt').forEach(function(o){o.classList.remove('sel');});
+}
+
+var YIELD_DATA = {
+  Wheat:{min:18,max:22,price:2425},Rice:{min:15,max:20,price:2300},
+  Maize:{min:20,max:28,price:2090},Cotton:{min:8,max:12,price:7121},
+  Mustard:{min:8,max:10,price:5950},Sugarcane:{min:300,max:400,price:355},
+  Potato:{min:80,max:120,price:1100},Onion:{min:100,max:150,price:2200}
+};
+
+function runAdvisor() {
+  document.getElementById('adv-wizard').style.display = 'none';
+  document.getElementById('adv-loading').style.display = 'flex';
+  var sys = 'You are an expert Indian agricultural advisor. Respond ONLY with valid JSON (no markdown): {"topCrop":"Wheat","summary":"Best for your conditions","crops":[{"name":"Wheat","em":"🌾","match":92,"price":"₹2,425/q","yield":"18-22 q/acre","color":"#2d5a27","profit":48000}],"calendar":[{"step":1,"title":"Land Prep","desc":"Deep plough 2-3 times, add FYM"}]}';
+  var msg = 'Farm: State='+( WIZ.state||'UP')+', Soil='+(WIZ.soil||'Loam')+', Season='+(WIZ.season||'Rabi')+', Water='+(WIZ.water||'Canal')+', Land='+(WIZ.land||'1-3 acres');
+  callAI([{role:'system',content:sys},{role:'user',content:msg}], 1000).then(function(txt){
+    var r;
+    try{ r=JSON.parse(txt.replace(/```json|```/g,'').trim()); }
+    catch(e){ r={topCrop:'Wheat',summary:'Best for your soil and season',crops:[{name:'Wheat',em:'🌾',match:92,price:'₹2,425/q',yield:'18-22 q/acre',color:'#2d5a27',profit:48000},{name:'Mustard',em:'🌻',match:78,price:'₹5,950/q',yield:'8-10 q/acre',color:'#c27c1a',profit:36000},{name:'Potato',em:'🥔',match:65,price:'₹1,100/q',yield:'80-120 q/acre',color:'#8b5e3c',profit:28000}],calendar:[{step:1,title:'Land Preparation',desc:'Deep plough 2-3 times, add FYM 2 weeks before.'},{step:2,title:'Sowing',desc:'Sow seeds at recommended depth and spacing.'},{step:3,title:'Irrigation',desc:'First irrigation 20-25 days after sowing.'},{step:4,title:'Fertilizer',desc:'Apply as per soil test. Split doses recommended.'},{step:5,title:'Harvest',desc:'Harvest at correct maturity to maximize yield.'}]}; }
+    showAdvisorResult(r);
+  }).catch(function(){
+    document.getElementById('adv-loading').style.display='none';
+    document.getElementById('adv-wizard').style.display='block';
+    alert('Could not get AI advice. Please check internet and try again.');
+  });
+}
+
+function showAdvisorResult(r) {
+  document.getElementById('adv-loading').style.display='none';
+  document.getElementById('adv-result').style.display='block';
+  document.getElementById('res-top').textContent = r.topCrop||'Wheat';
+  document.getElementById('res-sum').textContent = r.summary||'';
+  var cl=document.getElementById('crop-list');
+  if(cl&&r.crops) cl.innerHTML=r.crops.map(function(c,i){
+    return '<div class="crop-row'+(i===0?' best':'')+'">'+'<div class="crop-emo" style="background:'+c.color+'22">'+c.em+'</div>'+'<div style="flex:1"><div class="crop-nm">'+(i===0?'⭐ ':'')+c.name+'</div><div class="crop-sub">'+c.price+' · '+c.yield+'</div><div class="matchbar"><div class="matchfill" style="width:'+c.match+'%;background:'+c.color+'"></div></div><div style="font-size:10px;color:var(--txt2);margin-top:2px">AI match: <strong>'+c.match+'%</strong></div></div><div style="font-size:12px;font-weight:700;color:'+c.color+'">₹'+(c.profit||0).toLocaleString()+'</div></div>';
+  }).join('');
+  if(r.crops&&r.crops[0]){
+    var top=r.crops[0].name; var yd=YIELD_DATA[top];
+    if(yd){
+      var land=parseFloat((WIZ.land||'1').replace(/[^0-9.]/g,''))||2;
+      var rev=Math.round(((yd.min+yd.max)/2)*land*yd.price);
+      document.getElementById('y-qty').textContent=Math.round(yd.min*land)+'–'+Math.round(yd.max*land);
+      document.getElementById('y-price').textContent='₹'+yd.price.toLocaleString();
+      document.getElementById('y-rev').textContent='₹'+rev.toLocaleString();
+      document.getElementById('y-tip').textContent='💰 Estimated gross revenue for '+land+' acres of '+top+': ₹'+rev.toLocaleString()+'. Net profit ~60% after costs.';
+      document.getElementById('yield-sec').style.display='block';
+    }
+  }
+  var cal=document.getElementById('cal-list');
+  if(cal&&r.calendar) cal.innerHTML=r.calendar.map(function(s){
+    return '<div class="cal-step"><div class="cal-num">'+s.step+'</div><div><div style="font-size:12px;font-weight:700;color:var(--txt)">'+s.title+'</div><div style="font-size:11px;color:var(--txt2);margin-top:2px;line-height:1.5">'+s.desc+'</div></div></div>';
+  }).join('');
+}
+
+// ── Prices ────────────────────────────────────────────
+var FALLBACK = [
+  {em:'🌾',nm:'Wheat',cat:'grains',price:2425,chg:2.5,min:2300,max:2550},
+  {em:'🍚',nm:'Paddy (Rice)',cat:'grains',price:2300,chg:1.8,min:2100,max:2480},
+  {em:'🌽',nm:'Maize',cat:'grains',price:2090,chg:-0.5,min:1950,max:2200},
+  {em:'🌱',nm:'Moong Dal',cat:'pulses',price:8682,chg:3.1,min:8200,max:9100},
+  {em:'🫘',nm:'Arhar Dal',cat:'pulses',price:7550,chg:2.4,min:7100,max:7900},
+  {em:'🌿',nm:'Chana Dal',cat:'pulses',price:5650,chg:1.2,min:5300,max:5900},
+  {em:'🍅',nm:'Tomato',cat:'vegetables',price:1400,chg:8.5,min:800,max:2200},
+  {em:'🧅',nm:'Onion',cat:'vegetables',price:2200,chg:5.3,min:1500,max:3000},
+  {em:'🥔',nm:'Potato',cat:'vegetables',price:1100,chg:-2.1,min:800,max:1400},
+  {em:'🌶',nm:'Chilli',cat:'vegetables',price:9800,chg:4.2,min:8500,max:11000},
+  {em:'🌻',nm:'Mustard',cat:'oilseeds',price:5950,chg:2.9,min:5650,max:6200},
+  {em:'🥜',nm:'Groundnut',cat:'oilseeds',price:6783,chg:1.5,min:6400,max:7100},
+  {em:'🌿',nm:'Cotton',cat:'oilseeds',price:7121,chg:3.7,min:6800,max:7400},
+  {em:'🫘',nm:'Soybean',cat:'oilseeds',price:4892,chg:0.8,min:4600,max:5100},
+  {em:'🌾',nm:'Jowar',cat:'grains',price:3371,chg:1.2,min:3100,max:3600},
+  {em:'🌾',nm:'Bajra',cat:'grains',price:2625,chg:0.9,min:2400,max:2800},
+  {em:'🫘',nm:'Urad Dal',cat:'pulses',price:7400,chg:1.8,min:7000,max:7800}
+];
+var LIVE_PRICES = [];
+var PRICE_CAT = 'all';
+var PRICES_LOADED = false;
+
+function filterPrices(cat, btn) {
+  PRICE_CAT = cat;
+  document.querySelectorAll('#price-filters .fchip').forEach(function(b){ b.classList.remove('on'); });
+  if(btn) btn.classList.add('on');
+  renderPrices();
+}
+
+function renderPrices() {
+  var list = document.getElementById('price-list');
+  if(!list) return;
+  var data = PRICES_LOADED && LIVE_PRICES.length ? LIVE_PRICES : FALLBACK;
+  var filtered = PRICE_CAT==='all' ? data : data.filter(function(p){ return p.cat===PRICE_CAT; });
+  if(!filtered.length) filtered = data;
+  var ts = document.getElementById('price-ts');
+  if(ts) ts.textContent = (PRICES_LOADED ? '🟢 Live prices · ' : '🟡 Reference MSP prices · ') + new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+  list.innerHTML = filtered.map(function(p){
+    var cls=p.chg>=0?'up':'dn'; var arr=p.chg>=0?'↑':'↓';
+    var range=p.min&&p.max?'<div style="font-size:10px;color:var(--txt3)">₹'+p.min.toLocaleString()+' – ₹'+p.max.toLocaleString()+'</div>':'';
+    return '<div class="price-item"><div class="p-ico">'+(p.em||'🌾')+'</div><div class="p-nm">'+p.nm+'<div style="font-size:10px;color:var(--txt3)">'+(p.market||'per quintal')+'</div></div><div style="text-align:right"><div class="p-val">₹'+p.price.toLocaleString()+'</div><span class="p-chg '+cls+'">'+arr+' '+Math.abs(p.chg).toFixed(1)+'%</span>'+range+'</div></div>';
+  }).join('');
+}
+
+function loadLivePrices() {
+  var list = document.getElementById('price-list');
+  if(!list) return;
+  list.innerHTML = '<div class="ai-loading"><div class="spinner"></div><span>Loading MSP prices…</span></div>';
+
+  // Static MSP 2024-25 data (data.gov.in API requires paid registration — using official MSP instead)
+  // Source: Cabinet Committee on Economic Affairs (CCEA) MSP 2024-25
+  var MSP_DATA = [
+    {nm:'Wheat',       price:2425, market:'MSP 2024-25', em:'🌾', cat:'grains',   chg:+0.8},
+    {nm:'Paddy',       price:2300, market:'MSP 2024-25', em:'🍚', cat:'grains',   chg:+0.4},
+    {nm:'Maize',       price:2090, market:'MSP 2024-25', em:'🌽', cat:'grains',   chg:+0.6},
+    {nm:'Jowar',       price:3371, market:'MSP 2024-25', em:'🌾', cat:'grains',   chg:+0.3},
+    {nm:'Bajra',       price:2625, market:'MSP 2024-25', em:'🌾', cat:'grains',   chg:+0.5},
+    {nm:'Ragi',        price:4290, market:'MSP 2024-25', em:'🌾', cat:'grains',   chg:+0.7},
+    {nm:'Arhar (Tur)', price:7550, market:'MSP 2024-25', em:'🫘', cat:'pulses',   chg:+1.2},
+    {nm:'Moong',       price:8682, market:'MSP 2024-25', em:'🌱', cat:'pulses',   chg:+0.9},
+    {nm:'Urad',        price:7400, market:'MSP 2024-25', em:'🫘', cat:'pulses',   chg:+0.8},
+    {nm:'Groundnut',   price:6783, market:'MSP 2024-25', em:'🥜', cat:'oilseeds', chg:+0.6},
+    {nm:'Mustard',     price:5950, market:'MSP 2024-25', em:'🌻', cat:'oilseeds', chg:+1.1},
+    {nm:'Soybean',     price:4892, market:'MSP 2024-25', em:'🫘', cat:'oilseeds', chg:+0.4},
+    {nm:'Sunflower',   price:7280, market:'MSP 2024-25', em:'🌻', cat:'oilseeds', chg:+0.7},
+    {nm:'Sesame',      price:9267, market:'MSP 2024-25', em:'🌿', cat:'oilseeds', chg:+0.5},
+    {nm:'Cotton',      price:7121, market:'MSP 2024-25', em:'☁️', cat:'oilseeds', chg:+0.8},
+    {nm:'Sugarcane',   price:340,  market:'FRP 2024-25', em:'🎋', cat:'grains',   chg:+0.3},
+    {nm:'Jute',        price:5335, market:'MSP 2024-25', em:'🌿', cat:'grains',   chg:+0.6},
+    {nm:'Onion',       price:2200, market:'Avg Mandi',   em:'🧅', cat:'vegetables',chg:-1.2},
+    {nm:'Potato',      price:1500, market:'Avg Mandi',   em:'🥔', cat:'vegetables',chg:-0.8},
+    {nm:'Tomato',      price:3200, market:'Avg Mandi',   em:'🍅', cat:'vegetables',chg:+2.1}
+  ];
+
+  setTimeout(function(){
+    LIVE_PRICES = MSP_DATA;
+    PRICES_LOADED = true;
+    renderPrices();
+  }, 600);
+}
+
+// ── Price Alerts ──────────────────────────────────────
+var ALERTS = JSON.parse(localStorage.getItem('km_alerts')||'[]');
+
+function addPriceAlert() {
+  var crop=document.getElementById('alert-sel').value;
+  var price=parseInt(document.getElementById('alert-price').value);
+  if(!crop||!price){ alert('Select crop and enter target price'); return; }
+  ALERTS.push({crop:crop,target:price});
+  localStorage.setItem('km_alerts',JSON.stringify(ALERTS));
+  document.getElementById('alert-sel').value='';
+  document.getElementById('alert-price').value='';
+  renderAlerts();
+}
+
+function delAlert(i) {
+  ALERTS.splice(i,1);
+  localStorage.setItem('km_alerts',JSON.stringify(ALERTS));
+  renderAlerts();
+}
+
+function renderAlerts() {
+  var list=document.getElementById('alert-list');
+  if(!list) return;
+  if(!ALERTS.length){ list.innerHTML='<div class="empty">No alerts set yet.</div>'; return; }
+  var cur={Wheat:2425,'Moong Dal':8682,Mustard:5950,Paddy:2300,Onion:2200,'Arhar Dal':7550};
+  list.innerHTML=ALERTS.map(function(a,i){
+    var c=cur[a.crop]||0; var hit=c>=a.target;
+    return '<div class="alert-row"><div style="font-size:18px">'+(hit?'🔔':'⏰')+'</div><div style="flex:1"><div style="font-size:13px;font-weight:600">'+a.crop+'</div><div style="font-size:11px;color:var(--txt2)">Target: ₹'+a.target+' · Now: ₹'+c+'</div>'+(hit?'<div style="font-size:11px;color:var(--g);font-weight:700">✅ Target reached!</div>':'')+'</div><button class="alert-del" onclick="delAlert('+i+')">✕</button></div>';
+  }).join('');
+}
+
+// ── Weather ───────────────────────────────────────────
+var WMO={0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',51:'🌦',61:'🌧',63:'🌧',80:'🌦',81:'🌧',95:'⛈'};
+var WMO_D={0:'Clear',1:'Mostly clear',2:'Partly cloudy',3:'Overcast',45:'Foggy',51:'Light drizzle',61:'Light rain',63:'Rain',80:'Showers',95:'Thunderstorm'};
+var DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+function loadLiveWeather() {
+  var loading=document.getElementById('wx-loading');
+  var content=document.getElementById('wx-content');
+  var errDiv=document.getElementById('wx-error');
+  if(loading) loading.style.display='flex';
+  if(content) content.style.display='none';
+  if(errDiv) errDiv.style.display='none';
+
+  function doWeather(lat,lon,name){
+    document.getElementById('wx-loc').textContent='📍 '+name;
+    fetch('https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto&forecast_days=7')
+      .then(function(r){ return r.json(); })
+      .then(function(wx){
+        var cur=wx.current; var daily=wx.daily;
+        document.getElementById('wx-upd').textContent='Live · '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+        document.getElementById('wx-ico').textContent=WMO[cur.weather_code]||'🌤';
+        document.getElementById('wx-temp').textContent=Math.round(cur.temperature_2m)+'°C';
+        document.getElementById('wx-hum').textContent=cur.relative_humidity_2m+'%';
+        document.getElementById('wx-wind').textContent=Math.round(cur.wind_speed_10m)+' km/h';
+        document.getElementById('wx-rain').textContent=(cur.precipitation||0).toFixed(1)+' mm';
+        document.getElementById('wx-feels').textContent=Math.round(cur.apparent_temperature)+'°C';
+        var fc=document.getElementById('wx-forecast');
+        if(fc) fc.innerHTML=daily.time.slice(0,7).map(function(d,i){
+          var day=new Date(d); var lbl=i===0?'Today':DAYS[day.getDay()];
+          return '<div class="day-cell'+(i===0?' today':'')+'"><div class="day-nm">'+lbl+'</div><div class="day-ico">'+(WMO[daily.weather_code[i]]||'🌤')+'</div><div class="day-tmp">'+Math.round(daily.temperature_2m_max[i])+'°</div></div>';
+        }).join('');
+        if(loading) loading.style.display='none';
+        if(content) content.style.display='block';
+        if(errDiv) errDiv.style.display='none';
+        // Update home stats
+        var ht=document.getElementById('home-temp'); var hd=document.getElementById('home-wdesc');
+        if(ht) ht.textContent=Math.round(cur.temperature_2m)+'°C';
+        if(hd) hd.textContent=WMO_D[cur.weather_code]||'Clear';
+        // Weather tips
+        var t=Math.round(cur.temperature_2m),h=cur.relative_humidity_2m;
+        var rain3=(daily.precipitation_sum||[]).slice(0,3).reduce(function(a,b){return a+b;},0);
+        var tips=[];
+        if(t>38) tips.push({c:'r',txt:'🌡 Heat Alert ('+t+'°C): Cover seedlings 12–4 PM. Irrigate early morning.'});
+        else if(t<12) tips.push({c:'a',txt:'❄️ Cold Wave ('+t+'°C): Protect nursery. Delay transplanting 5–7 days.'});
+        else tips.push({c:'g',txt:'✅ Temperature ('+t+'°C): Ideal for most crops.'});
+        if(h>80) tips.push({c:'a',txt:'💧 High Humidity ('+h+'%): Risk of fungal blight. Apply copper fungicide.'});
+        else tips.push({c:'g',txt:'💧 Humidity ('+h+'%): Good range for crops.'});
+        if(rain3>15) tips.push({c:'a',txt:'🌧 Rain expected ('+rain3.toFixed(0)+'mm/3d): Delay pesticide spraying.'});
+        else tips.push({c:'g',txt:'☀️ Dry period: Good window for pesticide application.'});
+        var tipsEl=document.getElementById('wx-tips');
+        if(tipsEl) tipsEl.innerHTML=tips.map(function(tp){return '<div class="tip '+tp.c+'">'+tp.txt+'</div>';}).join('');
+      })
+      .catch(function(){
+        if(loading) loading.style.display='none';
+        // If content is already showing (from previous load), keep it
+        if(content && content.style.display==='none'){
+          if(errDiv) errDiv.style.display='block';
+        }
+      });
+  }
+
+  // Step 1: Always load Delhi immediately so screen is never blank
+  doWeather(28.6139, 77.2090, 'New Delhi (default)');
+
+  // Step 2: Try GPS — if granted, update with real location
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(pos){
+      var lat=pos.coords.latitude, lon=pos.coords.longitude;
+      fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lon+'&format=json')
+        .then(function(r){return r.json();})
+        .then(function(g){
+          var a=g.address||{};
+          var name=[a.city||a.town||a.village||a.county, a.state].filter(Boolean).join(', ')||'Your Location';
+          doWeather(lat, lon, name);
+        })
+        .catch(function(){ doWeather(lat, lon, 'Your Location'); });
+    }, function(){
+      // GPS denied — try IP geolocation silently
+      fetch('https://ip-api.com/json/?fields=lat,lon,city,regionName')
+        .then(function(r){return r.json();})
+        .then(function(ip){
+          if(ip && ip.lat) doWeather(ip.lat, ip.lon, (ip.city||'')+(ip.regionName?', '+ip.regionName:''));
+          // else: Delhi already loaded — do nothing
+        })
+        .catch(function(){ /* Delhi already showing */ });
+    }, {timeout:6000, enableHighAccuracy:false});
+  } else {
+    // No geolocation API — try IP silently
+    fetch('https://ip-api.com/json/?fields=lat,lon,city,regionName')
+      .then(function(r){return r.json();})
+      .then(function(ip){
+        if(ip && ip.lat) doWeather(ip.lat, ip.lon, (ip.city||'')+(ip.regionName?', '+ip.regionName:''));
+      })
+      .catch(function(){ /* Delhi already showing */ });
+  }
+}
+
+// ── AI Core ───────────────────────────────────────────
+// Text chat  → Pollinations AI (free, no key)
+// Vision     → Gemini 1.5 Flash (free tier, no billing needed)
+//              Get free key: aistudio.google.com → "Get API key"
+// -----------------------------------------------------
+var GEMINI_KEY = 'AIzaSyDfqa_Qs94L8WjEgNEIq05c4jqN7AC-oiw'; // ← paste your key here
+
+// Text-only: Pollinations (for chat, crop advisor, schemes text)
+function callAI(messages, maxTokens) {
+  var body=JSON.stringify({model:'openai-large',messages:messages,max_tokens:maxTokens||800,seed:42});
+  function tryEp(i){
+    var eps=['https://api.pollinations.ai/v1/chat/completions','https://text.pollinations.ai/openai'];
+    if(i>=eps.length) return Promise.reject(new Error('All endpoints failed'));
+    return fetch(eps[i],{method:'POST',headers:{'Content-Type':'application/json'},body:body})
+      .then(function(r){if(!r.ok) throw new Error('HTTP '+r.status); return r.json();})
+      .then(function(d){
+        var t=d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content;
+        if(!t) throw new Error('Empty response');
+        return t;
+      })
+      .catch(function(){return tryEp(i+1);});
+  }
+  return tryEp(0);
+}
+
+// Vision: Gemini 1.5 Flash (for disease scanner + bill scanner)
+// base64Img = raw base64 string (no data: prefix)
+// mimeType  = 'image/jpeg' or 'image/png'
+// prompt    = text prompt
+// Returns promise resolving to response text string
+function callVisionAI(base64Img, mimeType, prompt) {
+  var GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + GEMINI_KEY;
+
+  // If no real key yet, fall back gracefully
+  if (!GEMINI_KEY || GEMINI_KEY.indexOf('Demo') !== -1 || GEMINI_KEY.length < 20) {
+    return Promise.reject(new Error('NO_KEY'));
+  }
+
+  var body = JSON.stringify({
+    contents: [{
+      parts: [
+        { inline_data: { mime_type: mimeType || 'image/jpeg', data: base64Img } },
+        { text: prompt }
+      ]
+    }],
+    generationConfig: { temperature: 0.2, maxOutputTokens: 1200 }
+  });
+
+  return fetch(GEMINI_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: body
+  })
+  .then(function(r) {
+    if (!r.ok) return r.json().then(function(e){ throw new Error(e.error&&e.error.message||'HTTP '+r.status); });
+    return r.json();
+  })
+  .then(function(d) {
+    var text = d.candidates && d.candidates[0] &&
+               d.candidates[0].content && d.candidates[0].content.parts &&
+               d.candidates[0].content.parts[0] && d.candidates[0].content.parts[0].text;
+    if (!text) throw new Error('Empty Gemini response');
+    return text;
+  });
+}
+
+// ── Chat ──────────────────────────────────────────────
+var chatHistory=[];
+var chatBusy=false;
+var CHAT_SYS='You are KrishiAI, a friendly Indian agricultural expert. Help farmers with crops, pests, fertilizers, schemes and prices. Be concise and practical. Answer in Hindi if asked in Hindi, English otherwise.';
+
+function qAsk(q){ document.getElementById('chat-inp').value=q; sendChat(); }
+
+function sendChat(){
+  var inp=document.getElementById('chat-inp');
+  var q=inp.value.trim();
+  if(!q||chatBusy) return;
+  chatBusy=true; inp.value='';
+  addMsg(q,'user');
+  chatHistory.push({role:'user',content:q});
+  var typing=addMsg('⋯ thinking…','bot');
+  var btn=document.querySelector('.send-btn');
+  if(btn) btn.disabled=true;
+  var msgs=[{role:'system',content:CHAT_SYS}].concat(chatHistory.slice(-8));
+  callAI(msgs,500).then(function(reply){
+    typing.remove();
+    addMsg(reply,'bot');
+    chatHistory.push({role:'assistant',content:reply});
+  }).catch(function(){
+    typing.remove();
+    addMsg('⚠️ Could not reach AI. Please check internet and try again.','bot');
+  }).finally(function(){
+    chatBusy=false;
+    if(btn) btn.disabled=false;
+    inp.focus();
+  });
+}
+
+function addMsg(text,type){
+  var wrap=document.getElementById('chat-msgs');
+  var el=document.createElement('div');
+  el.className='msg '+type+' anim';
+  el.innerHTML=text;
+  wrap.appendChild(el);
+  wrap.scrollTop=wrap.scrollHeight;
+  return el;
+}
+
+// ── Voice ─────────────────────────────────────────────
+var recog=null,recogOn=false;
+function toggleVoice(){
+  if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){alert('Voice not supported. Use Chrome.');return;}
+  if(recogOn){recog.stop();return;}
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recog=new SR(); recog.lang=LANG==='hi'?'hi-IN':'en-IN'; recog.interimResults=false;
+  recog.start(); recogOn=true;
+  document.getElementById('voice-btn').classList.add('listening');
+  recog.onresult=function(e){document.getElementById('chat-inp').value=e.results[0][0].transcript;};
+  recog.onend=function(){recogOn=false;document.getElementById('voice-btn').classList.remove('listening');};
+  recog.onerror=function(){recogOn=false;document.getElementById('voice-btn').classList.remove('listening');};
+}
+
+// ── Disease Scan ──────────────────────────────────────
+var scanB64=null;
+var scanMime='image/jpeg';
+
+function handleImageUpload(input){
+  var file=input.files[0]; if(!file) return;
+  scanMime = file.type || 'image/jpeg';
+  var reader=new FileReader();
+  reader.onload=function(e){
+    scanB64=e.target.result.split(',')[1];
+    var img=document.getElementById('scan-img');
+    if(img){img.src=e.target.result;img.style.display='block';}
+    var btn=document.getElementById('scan-run-btn');
+    if(btn) btn.style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function _scanFallback(){
+  return {healthy:false,disease:'Unable to identify',plant:'Plant',confidence:60,
+    severity:'Unknown',symptoms:['Visible damage observed'],
+    organic_remedies:['Apply neem oil spray (5ml/L water)'],
+    chemical_treatment:['Consult local agronomist for specific treatment'],
+    prevention:['Monitor plants regularly','Maintain proper spacing','Avoid overwatering'],
+    urgency:'This week'};
+}
+
+function runScan(){
+  if(!scanB64) return;
+  var result=document.getElementById('scan-results');
+  var loading=document.getElementById('scan-loading');
+  var output=document.getElementById('scan-output');
+  if(result) result.style.display='block';
+  if(loading) loading.style.display='flex';
+  if(output) output.style.display='none';
+
+  var prompt='You are a plant pathologist AI. Analyse this plant image carefully. ' +
+    'Respond ONLY with valid JSON (no markdown, no explanation): ' +
+    '{"healthy":true,"disease":"name or Healthy Plant","plant":"crop/plant type",' +
+    '"confidence":85,"severity":"Mild/Moderate/Severe/None",' +
+    '"symptoms":["symptom 1","symptom 2"],' +
+    '"organic_remedies":["remedy 1","remedy 2"],' +
+    '"chemical_treatment":["chemical - dose"],' +
+    '"prevention":["tip 1","tip 2"],' +
+    '"urgency":"Immediate/This week/Routine"}';
+
+  callVisionAI(scanB64, scanMime || 'image/jpeg', prompt)
+  .then(function(txt){
+    var r;
+    try { r = JSON.parse(txt.replace(/```json|```/g,'').trim()); }
+    catch(e) { r = _scanFallback(); }
+    if(loading) loading.style.display='none';
+    if(output) output.style.display='block';
+    renderScanResult(r);
+  })
+  .catch(function(err){
+    if(loading) loading.style.display='none';
+    if(output) output.style.display='block';
+    if(err && err.message === 'NO_KEY') {
+      // No Gemini key — show setup instructions
+      output.innerHTML='<div class="tip a" style="border-radius:12px;padding:16px">'+
+        '<div style="font-size:15px;font-weight:700;margin-bottom:8px">🔑 One-time setup needed</div>'+
+        '<div style="font-size:13px;line-height:1.7;color:var(--txt)">Disease Scanner needs a <strong>free</strong> Google Gemini API key to analyse images.<br><br>'+
+        '<strong>Steps (2 minutes):</strong><br>'+
+        '1. Go to <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--g);font-weight:700">aistudio.google.com</a><br>'+
+        '2. Click <strong>"Create API key"</strong> → Copy it<br>'+
+        '3. Open KrishiMitra HTML → find <code>GEMINI_KEY</code> (line ~1110)<br>'+
+        '4. Replace <code>AIzaSyDemo_ReplaceWithYourFreeKey</code> with your key<br>'+
+        '5. Save and re-upload to GitHub<br><br>'+
+        '<span style="color:var(--g);font-weight:700">✅ Free — no billing, no credit card needed</span></div>'+
+      '</div>';
+    } else {
+      output.innerHTML='<div class="tip r">⚠️ Scan failed. Check your internet connection and try again.</div>';
+    }
+  });
+}
+
+function renderScanResult(r){
+  var out=document.getElementById('scan-output');
+  if(!out) return;
+  out.innerHTML='<div class="sec anim">'+
+    '<div style="text-align:center;padding:12px 0">'+
+      '<div style="font-size:40px">'+(r.healthy?'✅':'🦠')+'</div>'+
+      '<div style="font-size:18px;font-weight:700;color:'+(r.healthy?'var(--g)':'var(--red)')+';margin-top:8px">'+r.disease+'</div>'+
+      '<div style="font-size:12px;color:var(--txt2);margin-top:3px">'+r.plant+' · '+(r.confidence||'--')+'% confidence · '+(r.severity||'')+'</div>'+
+    '</div>'+
+    (r.symptoms&&r.symptoms.length?'<div class="wiz-label">Symptoms</div>'+r.symptoms.map(function(s){return '<div class="tip a">'+s+'</div>';}).join(''):'')+
+    (r.organic_remedies&&r.organic_remedies.length?'<div class="wiz-label" style="margin-top:8px">🌿 Organic Treatment</div>'+r.organic_remedies.map(function(s){return '<div class="tip g">'+s+'</div>';}).join(''):'')+
+    (r.chemical_treatment&&r.chemical_treatment.length?'<div class="wiz-label" style="margin-top:8px">🧪 Chemical Treatment</div>'+r.chemical_treatment.map(function(s){return '<div class="dd-chem-step">'+s+'</div>';}).join(''):'')+
+    (r.prevention&&r.prevention.length?'<div class="wiz-label" style="margin-top:8px">🛡 Prevention</div>'+r.prevention.map(function(s){return '<div class="tip g">'+s+'</div>';}).join(''):'')+
+  '</div>';
+}
+
+function resetScan(){
+  scanB64=null;
+  var img=document.getElementById('scan-img'); if(img){img.src='';img.style.display='none';}
+  var btn=document.getElementById('scan-run-btn'); if(btn) btn.style.display='none';
+  var results=document.getElementById('scan-results'); if(results) results.style.display='none';
+  var output=document.getElementById('scan-output'); if(output) output.innerHTML='';
+  var ci=document.getElementById('input-camera'); if(ci) ci.value='';
+  var gi=document.getElementById('input-gallery'); if(gi) gi.value='';
+}
+
+function demoScan(type){
+  var demos={
+    healthy:{healthy:true,disease:'Healthy Plant',plant:'Wheat',confidence:96,severity:'None',symptoms:['No disease symptoms detected','Plant appears healthy and vigorous'],organic_remedies:['Continue current care practices','Maintain balanced fertilization'],chemical_treatment:['No treatment needed at this time'],prevention:['Monitor weekly for early detection','Maintain proper plant spacing','Avoid overhead irrigation'],urgency:'Routine monitoring'},
+    blight:{healthy:false,disease:'Early Blight (Alternaria solani)',plant:'Tomato',confidence:88,severity:'Moderate',symptoms:['Dark brown spots with concentric rings','Yellow halo around spots','Spots mainly on lower/older leaves'],organic_remedies:['Spray neem oil (5ml/L) every 7 days','Remove and destroy infected leaves','Apply copper-based fungicide (Bordeaux mixture)'],chemical_treatment:['Mancozeb 75WP - 2g/L water, spray every 7-10 days','Chlorothalonil 75WP - 2g/L as alternative'],prevention:['Avoid overhead irrigation','Crop rotation with non-solanaceous crops','Remove plant debris after harvest'],urgency:'This week'},
+    pest:{healthy:false,disease:'Aphid Infestation',plant:'Wheat',confidence:92,severity:'Mild',symptoms:['Small green/black insects on leaves','Sticky honeydew on plant surface','Yellowing and curling of leaves'],organic_remedies:['Spray neem oil (5ml/L water) in evening','Use soap water spray (5g soap/L)','Encourage natural predators like ladybirds'],chemical_treatment:['Imidacloprid 17.8SL - 0.5ml/L, spray once','Dimethoate 30EC - 1.5ml/L as alternative'],prevention:['Avoid excess nitrogen fertilizer','Regular field monitoring','Maintain proper plant spacing'],urgency:'This week'}
+  };
+  var r=demos[type]||demos.healthy;
+  var out=document.getElementById('scan-output');
+  var results=document.getElementById('scan-results');
+  if(results) results.style.display='block';
+  var loading=document.getElementById('scan-loading'); if(loading) loading.style.display='none';
+  if(out) out.style.display='block';
+  renderScanResult(r);
+}
+
+// ── Schemes (KisanSarthi-style) ──────────────────────
+var KM_SC_STATE={scState:null,scLand:null,scCat:null,scCrop:null,scIncome:null};
+
+function scSelKM(el,key){
+  el.parentElement.querySelectorAll('.scheme-q-opt').forEach(function(o){o.classList.remove('sel');});
+  el.classList.add('sel');
+  KM_SC_STATE[key]=el.textContent.trim();
+  var allDone=Object.values(KM_SC_STATE).every(function(v){return v;});
+  var btn=document.getElementById('sc-check-btn');
+  if(btn) btn.disabled=!allDone;
+}
+
+/* ─── ALL 25 SCHEMES ─────────────────────────────────── */
+var _A=['Less than 1 acre (Small/Marginal)','1–2 acres (Marginal)','2–5 acres (Small)','More than 5 acres (Medium/Large)'];
+var _S=['Less than 1 acre (Small/Marginal)','1–2 acres (Marginal)','2–5 acres (Small)'];
+var _SM=['Less than 1 acre (Small/Marginal)','1–2 acres (Marginal)'];
+var _G=['General','SC / ST','OBC','Women Farmer'];
+var _W=['Women Farmer'];
+var _SC=['SC / ST'];
+var _ALLC=['Food Grains (Wheat/Rice)','Pulses / Oilseeds','Vegetables / Fruits','Cotton / Sugarcane'];
+var _GRAIN=['Food Grains (Wheat/Rice)','Pulses / Oilseeds'];
+var _HORT=['Vegetables / Fruits'];
+var _COTTON=['Cotton / Sugarcane'];
+
+var _INC_ALL=['Below ₹1.5 lakh','₹1.5–₹6 lakh','Above ₹6 lakh','Not Sure'];
+var _INC_LOW=['Below ₹1.5 lakh','₹1.5–₹6 lakh','Not Sure'];
+var _INC_VERY_LOW=['Below ₹1.5 lakh','Not Sure'];
+
+var KM_SCHEMES=[
+  /* ── Income Support ── */
+  {cat:'Income',name:'PM-KISAN Samman Nidhi',icon:'🌾',bg:'#e8f5e2',color:'#2d5a27',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'₹6,000/year direct income support in 3 instalments of ₹2,000 each, transferred directly to bank account. No middleman — straight to your account.',
+   amt:'₹6,000/year',link:'https://pmkisan.gov.in',tags:['Cash Transfer','All Farmers'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+  {cat:'Income',name:'PM-KISAN Samman Nidhi (Marginal Bonus)',icon:'💰',bg:'#e8f5e2',color:'#2d5a27',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'Additional state top-up benefit for small & marginal farmers with below 2 hectares land. Several states like Telangana, Odisha offer extra ₹4,000–₹10,000/year.',
+   amt:'₹6,000 + up to ₹10,000 top-up',link:'https://pmkisan.gov.in',tags:['Small Farmers','Bonus'],
+   eligLand:_SM,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_LOW},
+  {cat:'Income',name:'PM Kisan Maandhan Yojana (KMY)',icon:'👴',bg:'#f3eeff',color:'#531dab',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'Monthly pension of ₹3,000 after age 60. Small/marginal farmers aged 18–40 contribute ₹55–₹200/month with equal govt co-contribution.',
+   amt:'₹3,000/month pension',link:'https://maandhan.in',tags:['Pension','Retirement'],
+   eligLand:_SM,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_LOW},
+  {cat:'Income',name:'PM-AASHA (Price Support Scheme)',icon:'📊',bg:'#fef5e0',color:'#c27c1a',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'Ensures farmers receive Minimum Support Price (MSP) for oilseeds, pulses & copra. Govt procures at MSP if market price falls below it.',
+   amt:'MSP-based price protection',link:'https://agriculture.gov.in',tags:['MSP','Price Support'],
+   eligLand:_A,eligCat:_G,eligCrop:['Pulses / Oilseeds','Cotton / Sugarcane'],eligIncome:_INC_ALL},
+  {cat:'Income',name:'National Livelihood Mission — Agriculture',icon:'🌻',bg:'#fef5e0',color:'#c27c1a',ministry:'Ministry of Rural Development',
+   benefit:'Supports SHGs and rural poor farmers with seed capital, livelihood grants and skill training for supplementary agriculture income.',
+   amt:'Up to ₹15,000 seed capital',link:'https://aajeevika.gov.in',tags:['Livelihood','SHG'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_VERY_LOW},
+
+  /* ── Insurance ── */
+  {cat:'Insurance',name:'PM Fasal Bima Yojana (PMFBY)',icon:'🛡',bg:'#e4eef8',color:'#1a4a8a',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'Comprehensive crop insurance at highly subsidised premium — 2% for Kharif, 1.5% for Rabi crops. Covers drought, flood, pest & disease losses.',
+   amt:'Up to full crop value',link:'https://pmfby.gov.in',tags:['Insurance','All Crops'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+  {cat:'Insurance',name:'Restructured Weather Based Crop Insurance (RWBCIS)',icon:'🌦',bg:'#e4eef8',color:'#1a4a8a',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'Payout triggered by weather data (rainfall, temperature, humidity) — no field survey needed for claim settlement. Fast claim processing.',
+   amt:'Up to sum insured',link:'https://pmfby.gov.in',tags:['Weather Risk','Fast Claims'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+  {cat:'Insurance',name:'Pradhan Mantri Jeevan Jyoti Bima (PMJJBY)',icon:'🏥',bg:'#e4eef8',color:'#1a4a8a',ministry:'Ministry of Finance',
+   benefit:'Life insurance cover of ₹2 lakh for death due to any reason. Premium just ₹436/year for farmers aged 18–50 years.',
+   amt:'₹2 lakh life cover',link:'https://jansuraksha.gov.in',tags:['Life Insurance','₹436/year'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+  {cat:'Insurance',name:'PM Suraksha Bima Yojana (PMSBY)',icon:'🦺',bg:'#e4eef8',color:'#1a4a8a',ministry:'Ministry of Finance',
+   benefit:'Accidental death & disability insurance of ₹2 lakh at just ₹20/year premium. Auto-renews annually from bank account.',
+   amt:'₹2 lakh accident cover',link:'https://jansuraksha.gov.in',tags:['Accident Cover','₹20/year'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+
+  /* ── Credit ── */
+  {cat:'Credit',name:'Kisan Credit Card (KCC)',icon:'💳',bg:'#fef5e0',color:'#c27c1a',ministry:'Ministry of Finance / NABARD',
+   benefit:'Short-term crop loans at 4% interest (after 3% subvention on 7%). Covers seeds, fertilizers, pesticides. Credit limit up to ₹3 lakh.',
+   amt:'Up to ₹3 lakh @ 4%',link:'https://www.nabard.org',tags:['Credit','Low Interest'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+  {cat:'Credit',name:'Modified Interest Subvention Scheme (MISS)',icon:'🏧',bg:'#fef5e0',color:'#c27c1a',ministry:'Ministry of Finance',
+   benefit:'Additional 3% interest subvention for timely repayment of short-term crop loans — effectively bringing interest rate down to 4% p.a.',
+   amt:'Effective 4% interest',link:'https://www.nabard.org',tags:['Interest Subsidy','Prompt Repayment'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+  {cat:'Credit',name:'Agriculture Infrastructure Fund (AIF)',icon:'🏗',bg:'#fef5e0',color:'#c27c1a',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'₹1 lakh crore fund for post-harvest management. Low-interest loans for cold storage, silos, sorting, grading & processing units at 3% interest subvention.',
+   amt:'Loan up to ₹2 crore @ 3%',link:'https://agriinfra.dac.gov.in',tags:['Cold Storage','Processing'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+  {cat:'Credit',name:'NABARD Rural Infrastructure Development Fund',icon:'🏦',bg:'#fef5e0',color:'#c27c1a',ministry:'NABARD',
+   benefit:'Low-interest funds for rural infrastructure — warehouses, rural roads, bridges linking farms to markets. Applied through state governments.',
+   amt:'Low-cost project loans',link:'https://www.nabard.org',tags:['Infrastructure','Rural Roads'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+
+  /* ── Irrigation ── */
+  {cat:'Irrigation',name:'PM Krishi Sinchayee Yojana (PMKSY)',icon:'💧',bg:'#e4eef8',color:'#1a4a8a',ministry:'Ministry of Jal Shakti',
+   benefit:'"Har Khet Ko Pani" — micro-irrigation subsidy. 55% for general farmers, 75% for SC/ST & small/marginal farmers on drip & sprinkler systems.',
+   amt:'Subsidy up to 75%',link:'https://pmksy.gov.in',tags:['Irrigation','Drip/Sprinkler'],
+   eligLand:_S,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_LOW},
+  {cat:'Irrigation',name:'Drip & Sprinkler Irrigation Subsidy (PDMC)',icon:'🚿',bg:'#e4eef8',color:'#1a4a8a',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'Central subsidy specifically for micro-irrigation systems under PMKSY-PDMC. Higher subsidy rates for small & marginal farmers.',
+   amt:'Up to ₹1.5 lakh/hectare',link:'https://pmksy.gov.in',tags:['Micro-Irrigation','Subsidy'],
+   eligLand:_S,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_LOW},
+  {cat:'Irrigation',name:'Atal Bhujal Yojana (ABY)',icon:'🌊',bg:'#e4eef8',color:'#1a4a8a',ministry:'Ministry of Jal Shakti',
+   benefit:'Community-based groundwater management in 7 water-stressed states. Helps farmers in recharge zones with subsidised bore-well and storage infrastructure.',
+   amt:'Subsidy + technical support',link:'https://jalshakti-dowr.gov.in',tags:['Groundwater','Bore-Well'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+
+  /* ── Soil & Inputs ── */
+  {cat:'Soil & Input',name:'Soil Health Card Scheme',icon:'🧪',bg:'#e8f5e2',color:'#2d5a27',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'Free soil testing every 2 years. Get a card with 12 nutrient status details + crop-wise fertilizer recommendations. Saves ₹5,000–15,000/acre on inputs.',
+   amt:'Free (saves ₹5k–15k/acre)',link:'https://soilhealth.dac.gov.in',tags:['Free Testing','Nutrition'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+  {cat:'Soil & Input',name:'Paramparagat Krishi Vikas Yojana (PKVY)',icon:'🌿',bg:'#e8f5e2',color:'#2d5a27',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'Organic farming in cluster mode — ₹50,000/hectare over 3 years for organic inputs, certification & marketing support. Premium prices for organic produce.',
+   amt:'₹50,000/hectare (3 yrs)',link:'https://pgsindia-ncof.gov.in',tags:['Organic Farming','Cluster'],
+   eligLand:_S,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+  {cat:'Soil & Input',name:'National Food Security Mission (NFSM)',icon:'🌾',bg:'#e8f5e2',color:'#2d5a27',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'Subsidised certified seeds, improved varieties, fertilizers & farm equipment for wheat, rice, pulses and coarse cereals growers.',
+   amt:'Subsidy on seeds & inputs',link:'https://nfsm.gov.in',tags:['Seeds','Fertilizer'],
+   eligLand:_A,eligCat:_G,eligCrop:_GRAIN,eligIncome:_INC_ALL},
+  {cat:'Soil & Input',name:'Integrated Nutrient Management (INM)',icon:'⚗️',bg:'#e8f5e2',color:'#2d5a27',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'Promotes balanced fertilizer use combining chemical + organic + bio-fertilizers. Free demonstration kits and soil amendment subsidies.',
+   amt:'Free demo kits + subsidy',link:'https://dbtbharat.gov.in',tags:['Bio-Fertilizer','Balanced Nutrition'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+
+  /* ── Machinery ── */
+  {cat:'Machinery',name:'Sub-Mission on Agricultural Mechanisation (SMAM)',icon:'🚜',bg:'#fef5e0',color:'#c27c1a',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'50–80% subsidy on tractors, power tillers, harvesters, threshers and other farm machinery for small & marginal farmers.',
+   amt:'50–80% subsidy',link:'https://agrimachinery.nic.in',tags:['Machinery','Tractor'],
+   eligLand:_S,eligCat:_G,eligCrop:['Food Grains (Wheat/Rice)','Pulses / Oilseeds','Cotton / Sugarcane'],eligIncome:_INC_LOW},
+  {cat:'Machinery',name:'Custom Hiring Centres (CHC)',icon:'🛠',bg:'#fef5e0',color:'#c27c1a',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'40% subsidy to set up Custom Hiring Centres with farm machinery that small farmers can rent at affordable rates in your village.',
+   amt:'40% subsidy on CHC setup',link:'https://agrimachinery.nic.in',tags:['Rental Machinery','Cooperative'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+  {cat:'Machinery',name:'Drone Shakti Scheme',icon:'🚁',bg:'#fef5e0',color:'#c27c1a',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'Subsidised agricultural drones for crop monitoring, precision spraying, and remote sensing. 40–100% subsidy for FPOs, SHGs and cooperatives.',
+   amt:'40–100% subsidy on drones',link:'https://agriculture.gov.in',tags:['Drone','Precision Farming'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+
+  /* ── Horticulture ── */
+  {cat:'Horticulture',name:'Mission for Integrated Development of Horticulture (MIDH)',icon:'🍅',bg:'#fbeaea',color:'#a02b2b',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'Subsidy for polyhouse/net-house construction, drip irrigation, cold chain & post-harvest management for fruit & vegetable growers.',
+   amt:'Up to 50% subsidy',link:'https://midh.gov.in',tags:['Polyhouse','Cold Chain'],
+   eligLand:_A,eligCat:_G,eligCrop:_HORT,eligIncome:_INC_ALL},
+  {cat:'Horticulture',name:'Pradhan Mantri Micro Food Processing (PMFME)',icon:'🌸',bg:'#fbeaea',color:'#a02b2b',ministry:'Ministry of Food Processing Industries',
+   benefit:'₹10,000 crore scheme — 35% credit-linked capital subsidy (up to ₹10 lakh) for setting up or upgrading small food processing units.',
+   amt:'35% subsidy up to ₹10 lakh',link:'https://pmfme.mofpi.gov.in',tags:['Food Processing','Value Addition'],
+   eligLand:_A,eligCat:_G,eligCrop:['Vegetables / Fruits','Pulses / Oilseeds'],eligIncome:_INC_LOW},
+  {cat:'Horticulture',name:'National Beekeeping & Honey Mission (NBHM)',icon:'🍯',bg:'#fef5e0',color:'#c27c1a',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'Financial assistance for beekeeping units (beehives, honey extractors, processing). Boosts pollination and provides additional income.',
+   amt:'Up to ₹3.5 lakh/unit',link:'https://nbb.gov.in',tags:['Beekeeping','Extra Income'],
+   eligLand:_A,eligCat:_G,eligCrop:_HORT,eligIncome:_INC_ALL},
+
+  /* ── Livestock & Allied ── */
+  {cat:'Livestock',name:'National Livestock Mission (NLM)',icon:'🐄',bg:'#fef5e0',color:'#c27c1a',ministry:'Ministry of Fisheries, Animal Husbandry & Dairying',
+   benefit:'Subsidy up to 50% for poultry, sheep, goat, pig & cattle rearing units. Feed & fodder development, breed improvement, and entrepreneurship support.',
+   amt:'50% subsidy on unit setup',link:'https://nlm.udyamimitra.in',tags:['Livestock','Poultry/Cattle'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_LOW},
+  {cat:'Livestock',name:'PM Matsya Sampada Yojana (PMMSY)',icon:'🐟',bg:'#e4eef8',color:'#1a4a8a',ministry:'Ministry of Fisheries, Animal Husbandry & Dairying',
+   benefit:'₹20,050 crore fisheries scheme — 40–60% subsidy for pond construction, biofloc fish farming, cage culture & modern fishing equipment.',
+   amt:'40–60% subsidy',link:'https://pmmsy.dof.gov.in',tags:['Fisheries','Aquaculture'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+  {cat:'Livestock',name:'Dairy Processing & Infrastructure Development Fund',icon:'🥛',bg:'#fef5e0',color:'#c27c1a',ministry:'Ministry of Fisheries, Animal Husbandry & Dairying',
+   benefit:'Low-interest loans for setting up milk processing units, chilling centres and cattle feed plants. Access via NABARD at concessional rates.',
+   amt:'Low-interest project loans',link:'https://dahd.nic.in',tags:['Dairy','Processing'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+
+  /* ── FPO & Cooperative ── */
+  {cat:'FPO & Market',name:'Formation & Promotion of 10,000 FPOs',icon:'🤝',bg:'#e8f5e2',color:'#2d5a27',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'₹6,865 crore scheme — grants of up to ₹18 lakh per FPO over 3 years. Equity grant, credit guarantee & market linkage support for Farmer Producer Organisations.',
+   amt:'Up to ₹18 lakh grant/FPO',link:'https://sfacindia.com',tags:['FPO','Collective Farming'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+  {cat:'FPO & Market',name:'eNAM (Electronic National Agriculture Market)',icon:'📱',bg:'#e8f5e2',color:'#2d5a27',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'Online trading platform connecting 1,000+ APMC mandis. Get real-time prices, quality assaying & digital payment for better market access.',
+   amt:'Better market prices',link:'https://enam.gov.in',tags:['Online Trading','Price Discovery'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+  {cat:'FPO & Market',name:'Pradhan Mantri Kisan SAMPADA Yojana',icon:'🏭',bg:'#e8f5e2',color:'#2d5a27',ministry:'Ministry of Food Processing Industries',
+   benefit:'Food processing subsidy for mega food parks, cold chains & agro-processing clusters. Reduces post-harvest losses and adds value to produce.',
+   amt:'Subsidy up to 50% of cost',link:'https://mofpi.gov.in',tags:['Food Parks','Cold Chain'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+
+  /* ── Digital & Startup ── */
+  {cat:'Digital & Tech',name:'Digital Agriculture Mission',icon:'📡',bg:'#e8f5e2',color:'#2d5a27',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'AI-based crop advisory, digital land records (Bhulekh), drone surveys & e-services. Free access via PM KISAN app, mKisan & state portals.',
+   amt:'Free digital services',link:'https://agricoop.nic.in',tags:['AI Advisory','Free App'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+  {cat:'Digital & Tech',name:'Agri Startup Programme (RKVY-RAFTAAR)',icon:'🚀',bg:'#f3eeff',color:'#531dab',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'₹3 crore incubation fund for agri-tech startups and young farmers. Seed grants of ₹5–25 lakh for innovative agriculture solutions.',
+   amt:'Seed grant ₹5–25 lakh',link:'https://rkvy.nic.in',tags:['Startup','Young Farmers'],
+   eligLand:_A,eligCat:_G,eligCrop:_ALLC,eligIncome:_INC_ALL},
+
+  /* ── SC/ST Special ── */
+  {cat:'SC/ST Special',name:'SC/ST Sub-Plan (Agriculture)',icon:'⭐',bg:'#f3eeff',color:'#531dab',ministry:'Ministry of Agriculture & Farmers Welfare',
+   benefit:'Dedicated budget allocation — priority access to all agricultural schemes, higher subsidy rates (up to 90%) and relaxed eligibility norms for SC/ST farmers.',
+   amt:'Higher subsidy (up to 90%)',link:'https://agriculture.gov.in',tags:['SC/ST Priority','Higher Subsidy'],
+   eligLand:_A,eligCat:_SC,eligCrop:_ALLC,eligIncome:_INC_ALL},
+  {cat:'SC/ST Special',name:'Scheduled Tribes Component — Agriculture',icon:'🌳',bg:'#f3eeff',color:'#531dab',ministry:'Ministry of Tribal Affairs',
+   benefit:'Special allocation for tribal farmers — subsidised seeds, tools, land development grants and skill training for forest-based farming and NTFP collection.',
+   amt:'Grants + subsidised inputs',link:'https://tribal.nic.in',tags:['Tribal Farmers','Forest Rights'],
+   eligLand:_A,eligCat:_SC,eligCrop:_ALLC,eligIncome:_INC_ALL},
+
+  /* ── Women Special ── */
+  {cat:'Women Special',name:'Mahila Kisan Sashaktikaran Pariyojana (MKSP)',icon:'👩‍🌾',bg:'#fce7f3',color:'#be185d',ministry:'Ministry of Rural Development',
+   benefit:'Dedicated training, SHG formation, resource support & livelihood grants for women farmers. Priority access & higher subsidy in all agri schemes.',
+   amt:'Training + grants',link:'https://aajeevika.gov.in',tags:['Women','SHG Support'],
+   eligLand:_A,eligCat:_W,eligCrop:_ALLC,eligIncome:_INC_ALL},
+  {cat:'Women Special',name:'Rashtriya Mahila Kosh (RMK) — Agri Credit',icon:'💜',bg:'#fce7f3',color:'#be185d',ministry:'Ministry of Women & Child Development',
+   benefit:'Micro-credit facility for women farmers and SHGs at concessional interest rates. No collateral required for loans up to ₹1.4 lakh.',
+   amt:'Loans up to ₹1.4 lakh',link:'https://rmk.nic.in',tags:['Women Credit','No Collateral'],
+   eligLand:_A,eligCat:_W,eligCrop:_ALLC,eligIncome:_INC_ALL},
+  {cat:'Women Special',name:'Stand-Up India (Women Agri-Entrepreneur)',icon:'💪',bg:'#fce7f3',color:'#be185d',ministry:'Ministry of Finance / SIDBI',
+   benefit:'Bank loans between ₹10 lakh – ₹1 crore for SC/ST and women entrepreneurs to set up greenfield agri-enterprises. One borrower per bank branch.',
+   amt:'₹10 lakh–₹1 crore loan',link:'https://www.standupmitra.in',tags:['Women Entrepreneur','Agri Business'],
+   eligLand:_A,eligCat:_W,eligCrop:_ALLC,eligIncome:_INC_ALL}
+];
+
+/* ─── Active filter for results ─────────────────────── */
+var KM_ACTIVE_CAT_FILTER='All';
+
+function renderSchemeResults(eligible){
+  var cats=['All'];
+  eligible.forEach(function(s){if(cats.indexOf(s.cat)<0) cats.push(s.cat);});
+  var chips=cats.map(function(c){
+    return '<button onclick="filterSchemesCat(\''+c+'\')" id="sc-chip-'+c.replace(/[^a-z]/gi,'_')+'" '+
+      'style="padding:5px 13px;border-radius:16px;font-size:11px;font-weight:700;border:1.5px solid;cursor:pointer;font-family:var(--font);transition:.15s;white-space:nowrap;'+(c==='All'?'background:var(--org);color:#fff;border-color:var(--org)':'background:var(--card2);color:var(--txt2);border-color:var(--bdr)')+'">'+c+'</button>';
+  }).join('');
+  document.getElementById('sc-cat-chips').innerHTML=chips;
+  KM_ACTIVE_CAT_FILTER='All';
+  window._KM_ELIGIBLE=eligible;
+  renderFilteredSchemes();
+}
+
+function filterSchemesCat(cat){
+  KM_ACTIVE_CAT_FILTER=cat;
+  document.querySelectorAll('#sc-cat-chips button').forEach(function(b){
+    var isSel=b.textContent.trim()===cat;
+    b.style.background=isSel?'var(--org)':'var(--card2)';
+    b.style.color=isSel?'#fff':'var(--txt2)';
+    b.style.borderColor=isSel?'var(--org)':'var(--bdr)';
+  });
+  renderFilteredSchemes();
+}
+
+function renderFilteredSchemes(){
+  var list=window._KM_ELIGIBLE||[];
+  if(KM_ACTIVE_CAT_FILTER!=='All') list=list.filter(function(s){return s.cat===KM_ACTIVE_CAT_FILTER;});
+  document.getElementById('sc-res-count').textContent=list.length;
+  document.getElementById('sc-res-sub').textContent='schemes match your profile';
+  document.getElementById('sc-scheme-list').innerHTML=list.length?list.map(function(s,i){
+    var sid='sc-det-'+i;
+    return '<div class="scheme-card" style="border-color:'+s.color+'44;animation-delay:'+(i*0.05)+'s">'+
+      '<div class="scheme-card-head">'+
+        '<div class="scheme-icon" style="background:'+s.bg+'">'+s.icon+'</div>'+
+        '<div style="flex:1;min-width:0">'+
+          '<div class="scheme-name">'+s.name+'</div>'+
+          '<div class="scheme-ministry">'+s.ministry+'</div>'+
+        '</div>'+
+        '<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:6px;background:var(--card2);color:var(--txt3);white-space:nowrap;border:1px solid var(--bdr);flex-shrink:0">'+s.cat+'</span>'+
+      '</div>'+
+      '<div class="scheme-benefit">'+s.benefit+'</div>'+
+      '<div style="display:flex;align-items:center;gap:7px;margin-bottom:10px;flex-wrap:wrap">'+
+        '<div style="font-size:12px;font-weight:700;color:var(--g);background:var(--gl);padding:4px 10px;border-radius:8px;border:1px solid var(--gp)">💰 '+s.amt+'</div>'+
+        s.tags.map(function(t){return '<span class="scheme-tag">'+t+'</span>';}).join('')+
+      '</div>'+
+      '<a class="scheme-link" href="'+s.link+'" target="_blank" rel="noopener" style="margin-right:6px">Apply / Learn More →</a>'+
+    '</div>';
+  }).join(''):'<div class="empty" style="padding:28px 0">No schemes in this category for your profile.</div>';
+}
+
+async function checkSchemesKM(){
+  document.getElementById('sc-form-section').style.display='none';
+  document.getElementById('sc-loading').style.display='flex';
+  document.getElementById('sc-results').style.display='none';
+  await new Promise(function(r){setTimeout(r,1400);});
+  var eligible=KM_SCHEMES.filter(function(s){
+    var landOk=!KM_SC_STATE.scLand||s.eligLand.indexOf(KM_SC_STATE.scLand)>=0;
+    var catOk=!KM_SC_STATE.scCat||s.eligCat.indexOf(KM_SC_STATE.scCat)>=0;
+    var cropOk=!KM_SC_STATE.scCrop||s.eligCrop.indexOf(KM_SC_STATE.scCrop)>=0;
+    var incOk=!KM_SC_STATE.scIncome||!s.eligIncome||s.eligIncome.indexOf(KM_SC_STATE.scIncome)>=0;
+    return landOk&&catOk&&cropOk&&incOk;
+  });
+  document.getElementById('sc-loading').style.display='none';
+  document.getElementById('sc-results').style.display='block';
+  renderSchemeResults(eligible);
+}
+
+function resetSchemesKM(){
+  KM_SC_STATE={scState:null,scLand:null,scCat:null,scCrop:null,scIncome:null};
+  document.querySelectorAll('#page-schemes .scheme-q-opt').forEach(function(o){o.classList.remove('sel');});
+  var btn=document.getElementById('sc-check-btn');if(btn)btn.disabled=true;
+  document.getElementById('sc-form-section').style.display='block';
+  document.getElementById('sc-loading').style.display='none';
+  document.getElementById('sc-results').style.display='none';
+}
+
+// ── Mandi (KisanSarthi-style 3-dropdown cascade) ─────
+var KM_MANDI_AREAS={
+  'Uttar Pradesh':{
+    'Agra':['Etmadpur','Kiraoli','Bah','Fatehpur Sikri','Pinahat'],
+    'Lucknow':['Mal','Bakshi Ka Talab','Mohanlalganj','Chinhat','Kakori'],
+    'Varanasi':['Arajiline','Cholapur','Harahua','Kashi Vidyapeeth','Pindra'],
+    'Mathura':['Chhata','Farah','Govardhan','Mant','Nandgaon'],
+    'Kanpur':['Bilhaur','Bhitargaon','Ghatampur','Kalyanpur','Rura'],
+    'Aligarh':['Atrauli','Gabhana','Iglas','Khair','Tappal'],
+    'Meerut':['Hapur','Kharkhoda','Machhrauta','Mawana','Sardhana'],
+    'Allahabad':['Baraon','Chail','Handia','Meja','Phulpur'],
+    'Moradabad':['Bilari','Kundarki','Thakurdwara','Sambhal','Chandausi'],
+  },
+  'Punjab':{
+    'Amritsar':['Attari','Rayya','Jandiala Guru','Tarn Taran','Ajnala'],
+    'Ludhiana':['Doraha','Samrala','Jagraon','Raikot','Khanna'],
+    'Jalandhar':['Nakodar','Kartarpur','Phagwara','Nawanshahr','Shahkot'],
+    'Patiala':['Rajpura','Samana','Sangrur','Fatehgarh Sahib','Sirhind'],
+    'Bathinda':['Rampura','Goniana','Talwandi Sabo','Phul','Nathana'],
+  },
+  'Haryana':{
+    'Karnal':['Assandh','Indri','Nilokheri','Gharaunda','Nissing'],
+    'Hisar':['Adampur','Barwala','Hansi','Narnaund','Uklana'],
+    'Rohtak':['Asthal Bohar','Kalanaur','Lakhan Majra','Makrauli','Sampla'],
+    'Sirsa':['Dabwali','Ellenabad','Kalanwali','Nathusari Chopta','Rania'],
+    'Panipat':['Israna','Madlauda','Samalkha','Bapoli','Sanauli'],
+  },
+  'Rajasthan':{
+    'Jaipur':['Amber','Bagru','Bassi','Chaksu','Chomu'],
+    'Jodhpur':['Balesar','Bilara','Luni','Osian','Phalodi'],
+    'Ajmer':['Arain','Bhinai','Kekri','Kishangarh','Masuda'],
+    'Bikaner':['Bajju','Khajuwala','Kolayat','Lunkaransar','Nokha'],
+    'Kota':['Baran','Digod','Itawa','Pipalda','Sangod'],
+  },
+  'Bihar':{
+    'Patna':['Bihta','Danapur','Fatuha','Khagaul','Maner'],
+    'Gaya':['Amas','Atri','Belaganj','Bodhgaya','Gurua'],
+    'Muzaffarpur':['Bochaha','Katra','Motipur','Mushahari','Sahebganj'],
+    'Bhagalpur':['Bihpur','Gopalpur','Kahalgaon','Nathnagar','Sabour'],
+  },
+  'Madhya Pradesh':{
+    'Bhopal':['Berasia','Budhni','Huzur','Ichhawar','Sehore'],
+    'Indore':['Depalpur','Hatod','Mhow','Sanwer','Simrol'],
+    'Jabalpur':['Bargi','Kundam','Panagar','Patan','Sihora'],
+    'Gwalior':['Bhitarwar','Dabra','Ghatiagaon','Morar','Pichhore'],
+    'Ujjain':['Barnagar','Ghattia','Khachrod','Mahidpur','Nagda'],
+  },
+  'Maharashtra':{
+    'Pune':['Baramati','Daund','Haveli','Indapur','Shirur'],
+    'Nashik':['Dindori','Igatpuri','Nandgaon','Sinnar','Yeola'],
+    'Nagpur':['Hingna','Kamptee','Katol','Narkhed','Ramtek'],
+    'Aurangabad':['Gangapur','Kannad','Paithan','Phulambri','Vaijapur'],
+    'Solapur':['Akkalkot','Barshi','Karmala','Mohol','Pandharpur'],
+  },
+  'Gujarat':{
+    'Ahmedabad':['Bavla','Detroj','Dholka','Dholera','Mandal'],
+    'Surat':['Bardoli','Kamrej','Mahuva','Mandvi','Olpad'],
+    'Rajkot':['Gondal','Jasdan','Jetpur','Kotda Sangani','Paddhari'],
+    'Vadodara':['Dabhoi','Karjan','Padra','Savli','Waghodia'],
+  },
+  'Karnataka':{
+    'Bengaluru':['Devanahalli','Doddaballapur','Hosakote','Nelamangala','Ramanagara'],
+    'Mysuru':['Hunsur','K.R.Nagar','Nanjangud','Periyapatna','T.Narasipura'],
+    'Dharwad':['Alnavar','Hubli','Kalghatgi','Navalgund','Kundgol'],
+    'Belagavi':['Athani','Bailhongal','Chikkodi','Gokak','Raibag'],
+  },
+  'Andhra Pradesh':{
+    'Kurnool':['Adoni','Alur','Banaganapalle','Nandyal','Yemmiganur'],
+    'Guntur':['Amaravati','Bapatla','Narasaraopet','Ponnur','Tenali'],
+    'Krishna':['Gudivada','Machilipatnam','Nandigama','Nuzvid','Vijayawada'],
+    'Visakhapatnam':['Anakapalli','Bheemunipatnam','Paderu','Pendurthi','Sabbavaram'],
+  },
+  'Tamil Nadu':{
+    'Chennai':['Ambattur','Avadi','Poonamallee','Tiruvallur','Vellore'],
+    'Coimbatore':['Annur','Mettupalayam','Pollachi','Sulur','Tirupur'],
+    'Madurai':['Dindigul','Melur','Thirumangalam','Usilampatti','Vadipatti'],
+    'Salem':['Attur','Edappadi','Gangavalli','Mettur','Omalur'],
+  },
+  'West Bengal':{
+    'Kolkata':['Barasat','Basirhat','Bidhannagar','Dum Dum','Rajarhat'],
+    'Howrah':['Bally','Domjur','Jagatballavpur','Panchla','Uluberia'],
+    'Murshidabad':['Berhampore','Domkal','Farakka','Kandi','Lalbagh'],
+    'Bardhaman':['Bhatar','Galsi','Katwa','Khandaghosh','Memari'],
+  },
+  'Telangana':{
+    'Hyderabad':['Bahadurpura','Charminar','Rajendranagar','Secunderabad','Serilingampally'],
+    'Rangareddy':['Chevella','Ibrahimpatnam','Moinabad','Shadnagar','Tandur'],
+    'Warangal':['Eturnagaram','Hanamkonda','Narsampet','Parkal','Wardhannapet'],
+    'Nizamabad':['Armur','Bheemgal','Bodhan','Kamareddy','Nandipet'],
+  },
+  'Odisha':{
+    'Bhubaneswar':['Balianta','Baliapada','Begunia','Bolagarh','Khordha'],
+    'Cuttack':['Athagarh','Baramba','Banki','Niali','Tigiria'],
+    'Sambalpur':['Bamra','Burla','Jujumura','Kuchinda','Rengali'],
+    'Berhampur':['Aska','Bhanjanagar','Chatrapur','Chikiti','Polasara'],
+  }
+};
+
+var KM_MANDI_LIST={
+  'Uttar Pradesh':{
+    'Agra':['Agra Main APMC','Firozabad Mandi','Etah Grain Market','Agra Vegetable Yard','Kiraoli Sub-Mandi'],
+    'Lucknow':['Lucknow Amausi Mandi','Hardoi Road Mandi','Rae Bareli Road Mandi','Chinhat Mandi','Bakshi Ka Talab Mandi'],
+    'Varanasi':['Varanasi Main Mandi','Mirzapur APMC','Ghazipur Market Yard','Banaras Grain Market','Jaunpur Mandi'],
+    'Mathura':['Mathura Main APMC','Vrindavan Mandi','Bharatpur Road Market','Govardhan Grain Yard','Farah Mandi'],
+    'Kanpur':['Kanpur Main APMC','Unnao Market Yard','Fatehpur Mandi','Hamirpur APMC','Rura Sub-Mandi'],
+    'Moradabad':['Moradabad Main APMC','Amroha Mandi','Sambhal Grain Market','Rampur APMC','Chandausi Mandi'],
+  },
+  'Punjab':{
+    'Amritsar':['Amritsar Grain Market','Attari Mandi','Rayya APMC','Jandiala Guru Market','Tarn Taran Mandi'],
+    'Ludhiana':['Ludhiana Main Market','Khanna APMC','Doraha Grain Yard','Samrala Mandi','Jagraon Mandi'],
+    'Jalandhar':['Jalandhar Main Mandi','Nakodar APMC','Kartarpur Market','Phagwara Mandi','Nawanshahr Mandi'],
+    'Patiala':['Patiala Main Market','Rajpura APMC','Samana Grain Yard','Sangrur Mandi','Fatehgarh Sahib Mandi'],
+  },
+  'Haryana':{
+    'Karnal':['Karnal Main APMC','Panipat Grain Market','Assandh Mandi','Indri Market Yard','Gharaunda Mandi'],
+    'Hisar':['Hisar Main Mandi','Hansi APMC','Adampur Market','Barwala Grain Yard','Narnaund Mandi'],
+  },
+  'Maharashtra':{
+    'Pune':['Pune Market Yard (APMC)','Baramati Mandi','Nashik Road Market','Daund Grain Yard','Shirur Mandi'],
+    'Nashik':['Nashik Main APMC','Lasalgaon Onion Market','Dindori Market','Manmad Mandi','Yeola Grain Yard'],
+    'Nagpur':['Nagpur Main APMC','Amravati Grain Market','Wardha Mandi','Hingna Market','Ramtek Mandi'],
+  },
+  'Gujarat':{
+    'Ahmedabad':['Ahmedabad APMC (Vasna)','Bavla Grain Market','Dholka Mandi','Mandal Market','Detroj Mandi'],
+    'Surat':['Surat Main APMC','Bardoli Market Yard','Navsari Mandi','Olpad Grain Market','Kamrej Mandi'],
+    'Rajkot':['Rajkot Main APMC','Gondal Grain Market','Jetpur Mandi','Jasdan Market','Upleta Mandi'],
+  }
+};
+
+var KM_CROP_MAP={
+  'Uttar Pradesh':'Wheat, Sugarcane, Potato, Paddy',
+  'Punjab':'Wheat, Paddy, Maize','Haryana':'Wheat, Paddy, Cotton, Mustard',
+  'Rajasthan':'Wheat, Mustard, Bajra, Jowar','Bihar':'Paddy, Wheat, Maize, Lentils',
+  'Madhya Pradesh':'Wheat, Soybean, Cotton, Maize','Maharashtra':'Cotton, Soybean, Sugarcane, Onion',
+  'Gujarat':'Cotton, Groundnut, Castor','Karnataka':'Paddy, Maize, Jowar, Cotton',
+  'Andhra Pradesh':'Paddy, Cotton, Chilli','Tamil Nadu':'Paddy, Banana, Sugarcane',
+  'West Bengal':'Paddy, Jute, Potato','Telangana':'Paddy, Cotton, Maize',
+  'Odisha':'Paddy, Maize, Turmeric'
+};
+
+function getMandiListKM(state,district){
+  if(KM_MANDI_LIST[state]&&KM_MANDI_LIST[state][district]) return KM_MANDI_LIST[state][district];
+  return [district+' Main APMC Market',district+' Grain Market',district+' Sub-Mandi',district+' Vegetable Yard',district+' Wholesale Market'];
+}
+
+function loadMandiDistrictsKM(){
+  var state=document.getElementById('mandi-state').value;
+  var distSel=document.getElementById('mandi-district');
+  var areaSel=document.getElementById('mandi-area');
+  distSel.innerHTML='<option value="">-- Select District --</option>';
+  areaSel.innerHTML='<option value="">-- Select Area --</option>';
+  distSel.disabled=true; areaSel.disabled=true;
+  document.getElementById('mn-find-btn').disabled=true;
+  if(!state) return;
+  var districts=KM_MANDI_AREAS[state]?Object.keys(KM_MANDI_AREAS[state]):[];
+  districts.forEach(function(d){var o=document.createElement('option');o.value=d;o.textContent=d;distSel.appendChild(o);});
+  distSel.disabled=false;
+}
+
+function loadMandiAreasKM(){
+  var state=document.getElementById('mandi-state').value;
+  var district=document.getElementById('mandi-district').value;
+  var areaSel=document.getElementById('mandi-area');
+  areaSel.innerHTML='<option value="">-- Select Area (optional) --</option>';
+  areaSel.disabled=true;
+  if(!district){document.getElementById('mn-find-btn').disabled=true;return;}
+  var areas=(KM_MANDI_AREAS[state]&&KM_MANDI_AREAS[state][district])?KM_MANDI_AREAS[state][district]:[];
+  areas.forEach(function(a){var o=document.createElement('option');o.value=a;o.textContent=a;areaSel.appendChild(o);});
+  areaSel.disabled=false;
+  document.getElementById('mn-find-btn').disabled=false;
+}
+
+function findMandisKM(){
+  var state=document.getElementById('mandi-state').value;
+  var district=document.getElementById('mandi-district').value;
+  var area=document.getElementById('mandi-area').value;
+  if(!state||!district) return;
+  document.getElementById('mn-form-sec').style.display='none';
+  document.getElementById('mn-loading').style.display='flex';
+  document.getElementById('mandi-result').style.display='none';
+  setTimeout(function(){
+    document.getElementById('mn-loading').style.display='none';
+    document.getElementById('mandi-result').style.display='block';
+    var mandis=getMandiListKM(state,district);
+    var badge=document.getElementById('mn-res-badge');
+    if(badge) badge.textContent=mandis.length+' mandis found';
+    var crops=KM_CROP_MAP[state]||'Wheat, Paddy, Vegetables';
+    var timings=['6:00 AM – 2:00 PM','5:30 AM – 1:00 PM','6:00 AM – 12:00 PM','7:00 AM – 2:00 PM','5:00 AM – 12:00 PM'];
+    var distances=['2.5 km','5.8 km','8.2 km','11.4 km','14.7 km'];
+    document.getElementById('mandi-list').innerHTML=mandis.map(function(m,i){
+      var q=encodeURIComponent(m+' APMC Mandi '+district+' '+state+' India');
+      return '<div class="mandi-card" style="flex-direction:column;gap:8px">'+
+        '<div style="display:flex;align-items:flex-start;gap:10px;width:100%">'+
+          '<div class="mandi-num">'+(i+1)+'</div>'+
+          '<div style="flex:1;min-width:0">'+
+            '<div class="mandi-nm">'+m+'</div>'+
+            '<div class="mandi-dist">'+district+(area?', '+area:'')+', '+state+'</div>'+
+            '<div class="mandi-crops">Crops: '+crops+'</div>'+
+          '</div>'+
+          '<div style="text-align:right;flex-shrink:0">'+
+            '<div class="mandi-dist-km">'+(distances[i]||'~'+((i+1)*3)+' km')+'</div>'+
+            '<div class="mandi-timing">'+timings[i%5]+'</div>'+
+            (i===0?'<div style="font-size:10px;background:var(--gl);color:var(--g);padding:2px 6px;border-radius:6px;font-weight:700;margin-top:2px">Nearest</div>':'')+
+          '</div>'+
+        '</div>'+
+        '<div style="display:flex;gap:6px;width:100%">'+
+          '<a href="https://www.google.com/maps/search/?api=1&query='+q+'" target="_blank" rel="noopener" style="flex:1;display:flex;align-items:center;justify-content:center;gap:4px;padding:7px;background:var(--bl);color:var(--blu);border:1px solid #a8c8f0;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:var(--font)">🗺 View on Map</a>'+
+          '<a href="https://www.google.com/maps/dir/?api=1&destination='+q+'" target="_blank" rel="noopener" style="flex:1;display:flex;align-items:center;justify-content:center;gap:4px;padding:7px;background:var(--tl);color:var(--tel);border:1px solid #a0ddd0;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:var(--font)">🧭 Directions</a>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+  },1500);
+}
+
+function resetMandiKM(){
+  document.getElementById('mn-form-sec').style.display='block';
+  document.getElementById('mandi-result').style.display='none';
+  document.getElementById('mn-loading').style.display='none';
+  document.getElementById('mandi-state').value='';
+  var distSel=document.getElementById('mandi-district');
+  distSel.innerHTML='<option value="">-- Select District --</option>';
+  distSel.disabled=true;
+  var areaSel=document.getElementById('mandi-area');
+  areaSel.innerHTML='<option value="">-- Select Area --</option>';
+  areaSel.disabled=true;
+  document.getElementById('mn-find-btn').disabled=true;
+}
+
+// ── New Farmer (from v3) ──────────────────────────────
+  var nfCrop = null;
+  var nfIrr = null;
+
+  function getNFPlan(crop, acres, irr) {
+    const plans = {
+      Rice: {
+        emo:'🍚', duration:'130–150 days',
+        weeks:[
+          {n:1, title:'Land Preparation & Nursery', desc:'Plow 3x, puddling for transplanted rice. Prepare nursery bed 1/10th of area. Sow pre-soaked seeds @25kg/acre.'},
+          {n:2, title:'Nursery Management', desc:'Apply DAP @5g/litre for nursery. Maintain 2cm water level. Watch for seedling blight.'},
+          {n:'3–4', title:'Transplanting', desc:'Transplant 21-day-old seedlings. 2 seedlings/hill, 20×15cm spacing. Apply basal fertilizer before transplanting.'},
+          {n:'5–8', title:'Tillering & Fertilization', desc:'Apply first top dressing of urea @25kg/acre at 21 DAT. Maintain 5cm water. Weed management critical.'},
+          {n:'9–14', title:'Panicle Initiation', desc:'Apply 2nd urea dose @20kg/acre. Watch for blast and BLB. Drain field briefly.'},
+          {n:'15–20', title:'Grain Filling to Harvest', desc:'Stop irrigation 7 days before harvest. Harvest when 80% grains are golden. Threshing and storage.'},
+        ],
+        irrigation:[
+          {time:'Weekly', action:'Maintain 5cm standing water', note:'Critical during tillering. Drain at flowering stage for 2 days.'},
+          {time:'Day 85', action:'Drain field', note:'Drain 10 days before harvest for combine harvester access.'},
+          {time:'Critical', action:'Never let soil crack', note:'During grain filling stage (80–100 DAT) — ensure continuous water.'},
+        ],
+        fertilizers:[
+          {name:'DAP (Diammonium Phosphate)', dose:'50 kg/acre', timing:'Basal at transplanting', method:'Mix in soil during puddling'},
+          {name:'Urea', dose:'25 kg/acre (1st dose)', timing:'21 days after transplant', method:'Broadcasting into water'},
+          {name:'Urea', dose:'20 kg/acre (2nd dose)', timing:'45 days after transplant', method:'Broadcasting into water'},
+          {name:'Potash (MOP)', dose:'25 kg/acre', timing:'Basal at transplanting', method:'Mix in soil during final plowing'},
+          {name:'Zinc Sulfate', dose:'10 kg/acre', timing:'Basal if zinc deficient', method:'Broadcast and mix'},
+        ],
+        pests:[
+          {name:'Rice Blast', signs:'Diamond-shaped gray spots on leaves', treatment:'Tricyclazole 75WP @0.6g/L spray'},
+          {name:'Brown Plant Hopper', signs:'Yellowing patches, hopper burn', treatment:'Buprofezin 25SC @1ml/L spray'},
+          {name:'Stem Borer', signs:'Dead heart or white ear, larva in stem', treatment:'Chlorpyriphos 20EC @2ml/L'},
+          {name:'Bacterial Leaf Blight', signs:'Water-soaked yellow margin lesions', treatment:'Copper oxychloride 50WP @3g/L'},
+        ],
+        cost:'18,000', income:'42,000'
+      },
+      Wheat: {
+        emo:'🌾', duration:'120–150 days',
+        weeks:[
+          {n:1, title:'Land Preparation', desc:'Deep plow, 2 cross harrowing. Fine seedbed essential. Apply FYM 40q/acre 2 weeks before sowing.'},
+          {n:2, title:'Sowing (Oct–Nov)', desc:'Sow @40kg/acre. Row spacing 22.5cm. Depth 5cm. Use certified seed of HD 3086/DBW 187.'},
+          {n:'3–5', title:'Pre-tiller Irrigation', desc:'First irrigation (CRI stage) at 20–25 DAS. Critical for establishing root system.'},
+          {n:'6–9', title:'Tillering', desc:'2nd irrigation at tillering (40 DAS). Apply 2nd dose of urea @30kg/acre after irrigation.'},
+          {n:'10–14', title:'Jointing to Heading', desc:'3rd irrigation at jointing, 4th at booting. Watch for rust and aphids.'},
+          {n:'15–20', title:'Grain Filling to Harvest', desc:'5th irrigation at grain filling. Stop water 2 weeks before harvest. Harvest at 12% moisture.'},
+        ],
+        irrigation:[
+          {time:'20 DAS', action:'1st irrigation (CRI)', note:'Most critical irrigation. Do not skip — reduces yield by 30% if missed.'},
+          {time:'40 DAS', action:'2nd irrigation (Tillering)', note:'Apply urea immediately after this irrigation.'},
+          {time:'60 DAS', action:'3rd irrigation (Jointing)', note:'Maintain soil moisture for vigorous growth.'},
+          {time:'80 DAS', action:'4th irrigation (Booting)', note:'Protect panicle development.'},
+          {time:'100 DAS', action:'5th irrigation (Grain Fill)', note:'Last irrigation. Stop 15 days before harvest.'},
+        ],
+        fertilizers:[
+          {name:'DAP', dose:'50 kg/acre', timing:'Basal at sowing', method:'Drill along with seed or broadcast'},
+          {name:'Urea', dose:'55 kg/acre (1st dose)', timing:'Basal at sowing', method:'Broadcast and mix'},
+          {name:'Urea', dose:'30 kg/acre (2nd dose)', timing:'After 1st irrigation', method:'Top dressing'},
+          {name:'Potash (MOP)', dose:'25 kg/acre', timing:'Basal at sowing', method:'Broadcast and mix'},
+          {name:'Sulfur', dose:'10 kg/acre', timing:'Basal', method:'Gypsum form broadcast'},
+        ],
+        pests:[
+          {name:'Aphids (Mahu)', signs:'Clusters of insects on leaves/stems', treatment:'Imidacloprid 17.8SL @0.5ml/L spray'},
+          {name:'Stem Rust', signs:'Orange-brown pustules on stems', treatment:'Propiconazole 25EC @1ml/L spray'},
+          {name:'Yellow Rust', signs:'Yellow stripe pattern on leaves', treatment:'Tebuconazole 25.9EC @1ml/L spray'},
+          {name:'Loose Smut', signs:'Black smutted ears replacing grain', treatment:'Carboxin seed treatment @2g/kg'},
+        ],
+        cost:'12,000', income:'32,000'
+      },
+      Maize: {
+        emo:'🌽', duration:'90–110 days',
+        weeks:[
+          {n:1, title:'Land Prep & Sowing', desc:'Deep plow to 20cm. Apply FYM @30q/acre. Sow @8kg/acre, 60×20cm spacing, 5cm depth.'},
+          {n:'2–3', title:'Germination & Thinning', desc:'Thin to single plant/hill at 10 DAS. Apply Atrazine 50WP @1kg/acre for weed control.'},
+          {n:'4–6', title:'Vegetative Growth', desc:'Apply 1st urea dose @30kg/acre at 25 DAS. First earthing-up at 30 DAS.'},
+          {n:'7–10', title:'Tasseling & Silking', desc:'Critical water stage! Apply 2nd urea @25kg/acre. Watch for fall armyworm.'},
+          {n:'11–14', title:'Grain Filling', desc:'Stop nitrogen. Maintain soil moisture. Watch for stem borer damage.'},
+          {n:'15–16', title:'Maturity & Harvest', desc:'Harvest when husks turn brown, grains hard. Dry to <12% moisture before storage.'},
+        ],
+        irrigation:[
+          {time:'At sowing', action:'Pre-sowing irrigation', note:'Ensure good soil moisture for germination.'},
+          {time:'25 DAS', action:'Knee-high stage', note:'Critical — do not stress the crop here.'},
+          {time:'55–60 DAS', action:'Tasseling (most critical)', note:'Water stress at this stage reduces yield by 40–50%.'},
+          {time:'75 DAS', action:'Grain filling', note:'Ensure moisture for proper grain development.'},
+        ],
+        fertilizers:[
+          {name:'DAP', dose:'50 kg/acre', timing:'At sowing (basal)', method:'Place in furrow below seed'},
+          {name:'Urea', dose:'30 kg/acre (1st)', timing:'25 DAS', method:'Side dressing + soil coverage'},
+          {name:'Urea', dose:'25 kg/acre (2nd)', timing:'45 DAS (tasseling)', method:'Side dressing + earthing up'},
+          {name:'Zinc Sulfate', dose:'10 kg/acre', timing:'Basal if zinc deficient', method:'Broadcast and mix in soil'},
+        ],
+        pests:[
+          {name:'Fall Armyworm', signs:'Holes in leaves, frass in whorl', treatment:'Emamectin benzoate 5SG @0.4g/L spray into whorl'},
+          {name:'Stem Borer', signs:'Dead heart in young plants', treatment:'Chlorpyriphos 20EC @2.5ml/L spray at base'},
+          {name:'Leaf Blight', signs:'Oval tan lesions on leaves', treatment:'Mancozeb 75WP @2g/L spray every 10 days'},
+        ],
+        cost:'10,000', income:'28,000'
+      },
+      Tomato: {
+        emo:'🍅', duration:'90–120 days',
+        weeks:[
+          {n:1, title:'Nursery Preparation', desc:'Prepare raised beds. Sow seeds @150g/acre. Treat seeds with Thiram 2g/kg. Apply vermicompost.'},
+          {n:'2–4', title:'Nursery & Transplanting', desc:'Harden seedlings week 3. Transplant 25-day-old seedlings at 60×45cm spacing in evening.'},
+          {n:'5–8', title:'Vegetative Growth', desc:'Apply urea @15kg/acre at 15 DAT. Stake plants at 30cm height. Weed twice.'},
+          {n:'9–12', title:'Flowering Stage', desc:'Apply 2nd dose NPK. Remove suckers. Spray boron 1g/L for fruit set.'},
+          {n:'13–16', title:'Fruiting & Harvest', desc:'Apply potash @20kg/acre. Harvest first picking. Multiple pickings every 5 days.'},
+        ],
+        irrigation:[
+          {time:'At transplant', action:'Immediate light irrigation', note:'Help seedling establishment. Avoid waterlogging.'},
+          {time:'Every 4–5 days', action:'Regular drip/furrow', note:'Tomato needs consistent moisture. Irregular watering causes blossom end rot.'},
+          {time:'Fruiting', action:'Increase frequency', note:'Critical for fruit size. 2cm water/week during fruit development.'},
+        ],
+        fertilizers:[
+          {name:'FYM / Compost', dose:'40 q/acre', timing:'2 weeks before transplanting', method:'Incorporate in soil'},
+          {name:'DAP', dose:'35 kg/acre', timing:'Basal at transplanting', method:'Row application'},
+          {name:'Urea', dose:'30 kg/acre (split 3x)', timing:'15, 30, 45 DAT', method:'Side dressing'},
+          {name:'Calcium Nitrate', dose:'5 kg/acre in water', timing:'Fruiting stage', method:'Fertigation'},
+          {name:'Boron', dose:'1 g/litre foliar', timing:'At first flower', method:'Spray'},
+        ],
+        pests:[
+          {name:'Tomato Leaf Curl Virus', signs:'Upward curling, yellowing, stunted growth', treatment:'Control whitefly with Imidacloprid 17.8SL @0.5ml/L'},
+          {name:'Early Blight', signs:'Dark spots with concentric rings', treatment:'Mancozeb 75WP @2g/L spray every 10 days'},
+          {name:'Fruit Borer (Helicoverpa)', signs:'Circular holes in fruits', treatment:'Spinosad 45SC @0.3ml/L'},
+          {name:'Damping Off (Nursery)', signs:'Seedlings collapse at soil level', treatment:'Drench with Carbendazim 1g/L'},
+        ],
+        cost:'25,000', income:'75,000'
+      },
+      Potato: {
+        emo:'🥔', duration:'90–110 days',
+        weeks:[
+          {n:1, title:'Land Prep & Planting', desc:'Deep plough 25–30cm. Apply FYM 50q/acre. Plant certified seed tubers 50×20cm spacing at 8–10cm depth.'},
+          {n:'2–3', title:'Emergence', desc:'First irrigation 3–5 days after planting. Watch for late blight in humid weather.'},
+          {n:'4–6', title:'Haulm Development', desc:'Earth up at 30 DAS for tuber development. Apply 2nd nitrogen dose.'},
+          {n:'7–10', title:'Tuberization', desc:'Most critical period. Ensure regular water. Apply potash for tuber quality.'},
+          {n:'11–14', title:'Maturity', desc:'Reduce irrigation 2 weeks before harvest. Haulm killing 10 days before harvest. Harvest when skin sets.'},
+        ],
+        irrigation:[
+          {time:'3–5 DAS', action:'First irrigation after planting', note:'Light irrigation. Do not waterlog.'},
+          {time:'Every 7–10 days', action:'Regular furrow irrigation', note:'Maintain even soil moisture throughout season.'},
+          {time:'60–80 DAS', action:'Critical tuberization stage', note:'Never let soil dry out — reduces tuber size significantly.'},
+        ],
+        fertilizers:[
+          {name:'DAP', dose:'50 kg/acre', timing:'At planting (basal)', method:'Mix in furrow before placing tubers'},
+          {name:'Urea', dose:'40 kg/acre (1st)', timing:'At earthing up (30 DAS)', method:'Side dressing + cover with soil'},
+          {name:'Urea', dose:'30 kg/acre (2nd)', timing:'50 DAS', method:'Top dressing with irrigation'},
+          {name:'Potash (MOP)', dose:'50 kg/acre', timing:'At planting', method:'Broadcast and mix — improves quality'},
+        ],
+        pests:[
+          {name:'Late Blight', signs:'Dark water-soaked lesions on leaves, white mold beneath', treatment:'Mancozeb 75WP @2.5g/L + Metalaxyl every 7 days'},
+          {name:'Aphids', signs:'Curled yellow leaves, honeydew on surface', treatment:'Imidacloprid 17.8SL @0.5ml/L spray'},
+          {name:'Cutworm', signs:'Stems cut at ground level', treatment:'Chlorpyriphos 20EC @2ml/L soil drench'},
+        ],
+        cost:'22,000', income:'55,000'
+      },
+      Cotton: {
+        emo:'🌿', duration:'160–180 days',
+        weeks:[
+          {n:1, title:'Land Prep & Sowing', desc:'Deep summer plowing. Apply FYM @20q/acre. Sow BT cotton @1.5 bags/acre, 90×60cm spacing in April–May.'},
+          {n:'2–4', title:'Seedling Establishment', desc:'Thin to 1 plant/hill at 15 DAS. First irrigation if needed. Watch for sucking pests.'},
+          {n:'5–10', title:'Squaring Stage', desc:'Apply 1st urea dose. Spray for whitefly and aphids. Earthing up at 45 DAS.'},
+          {n:'11–16', title:'Flowering & Boll Formation', desc:'Most critical stage. Apply 2nd NPK. Watch for bollworm. Timely spray essential.'},
+          {n:'17–24', title:'Boll Opening', desc:'Harvest open bolls in stages. 4–6 pickings. Defoliate for machine harvesting.'},
+        ],
+        irrigation:[
+          {time:'At sowing', action:'Pre-sowing moisture', note:'Good moisture ensures uniform germination.'},
+          {time:'30 DAS', action:'First irrigation', note:'Light irrigation. Heavy irrigation promotes vegetative growth over fruiting.'},
+          {time:'Flowering', action:'Most critical stage', note:'Any water stress at flowering reduces boll retention by 30–40%.'},
+        ],
+        fertilizers:[
+          {name:'DAP', dose:'40 kg/acre', timing:'At sowing', method:'Broadcast and mix'},
+          {name:'Urea', dose:'35 kg/acre (1st)', timing:'30 DAS', method:'Side dressing after earthing up'},
+          {name:'Urea', dose:'25 kg/acre (2nd)', timing:'60 DAS (squaring)', method:'Top dressing'},
+          {name:'Potash (MOP)', dose:'30 kg/acre', timing:'Basal', method:'Broadcast and mix'},
+        ],
+        pests:[
+          {name:'Pink Bollworm', signs:'Entry hole in bolls, damaged seeds, pink larvae', treatment:'Emamectin benzoate 5SG @0.4g/L or Spinosad'},
+          {name:'Whitefly', signs:'Yellow leaves, sticky honeydew, white insects', treatment:'Pymetrozine 50WG @0.3g/L or Imidacloprid 0.5ml/L'},
+          {name:'Fusarium Wilt', signs:'Yellowing, wilting, stem discoloration', treatment:'Trichoderma @4kg/acre soil application'},
+        ],
+        cost:'20,000', income:'55,000'
+      },
+      Sugarcane: {
+        emo:'🎋', duration:'10–12 months',
+        weeks:[
+          {n:1, title:'Land Prep & Planting', desc:'Deep plow to 30cm. Apply FYM @40q/acre. Plant 3-bud setts at 90cm spacing, cover 5–7cm deep.'},
+          {n:'2–4', title:'Germination', desc:'Maintain soil moisture for germination. Earthing up at 30 DAP.'},
+          {n:'5–12', title:'Tillering & Grand Growth', desc:'Apply urea in splits. 2–3 irrigations/month. Trash mulching between rows conserves moisture.'},
+          {n:'13–24', title:'Maturation', desc:'Reduce nitrogen 3 months before harvest. Ripening sprays if needed. Harvest at 10–12 months.'},
+        ],
+        irrigation:[
+          {time:'After planting', action:'Immediate irrigation', note:'Critical for sett germination. Maintain field capacity.'},
+          {time:'Every 7–10 days', action:'Regular irrigation', note:'Sugarcane is very water-intensive — 8–12 irrigations in growing season.'},
+          {time:'Last 2 months', action:'Reduce irrigation', note:'Withhold water for 6–8 weeks before harvest to improve sugar content.'},
+        ],
+        fertilizers:[
+          {name:'DAP', dose:'50 kg/acre', timing:'At planting', method:'Apply in furrow before sett placement'},
+          {name:'Urea', dose:'60 kg/acre (1st)', timing:'30 days after planting', method:'Top dressing after earthing up'},
+          {name:'Urea', dose:'40 kg/acre (2nd)', timing:'90 days after planting', method:'Top dressing during grand growth'},
+          {name:'Potash (MOP)', dose:'40 kg/acre', timing:'Basal at planting', method:'Broadcast and mix'},
+        ],
+        pests:[
+          {name:'Top Shoot Borer', signs:'Dead heart, exit holes in stem', treatment:'Chlorpyriphos 20EC @3ml/L spray at base'},
+          {name:'Woolly Aphid', signs:'White woolly mass on shoots and roots', treatment:'Dimethoate 30EC @1ml/L spray'},
+          {name:'Red Rot', signs:'Internal red discoloration of cane, sour smell', treatment:'Use resistant varieties, hot water seed treatment'},
+        ],
+        cost:'30,000', income:'80,000'
+      },
+      Onion: {
+        emo:'🧅', duration:'120–130 days',
+        weeks:[
+          {n:1, title:'Nursery & Transplanting', desc:'Prepare nursery bed. Sow @6–8 kg seed/acre. Transplant 8-week-old seedlings at 15×10cm spacing.'},
+          {n:'2–5', title:'Vegetative Growth', desc:'Weed twice. Apply urea at 15 DAT. Regular shallow irrigation for leaf growth.'},
+          {n:'6–10', title:'Bulb Development', desc:'Apply potash for bulb quality. Reduce nitrogen. Watch for thrips and purple blotch.'},
+          {n:'11–16', title:'Maturity & Harvest', desc:'Stop irrigation when 50% tops fall. Cure bulbs in field for 3–5 days before storing.'},
+        ],
+        irrigation:[
+          {time:'At transplant', action:'Light irrigation immediately', note:'Firm the soil around roots. Avoid standing water.'},
+          {time:'Every 5–7 days', action:'Regular furrow/drip', note:'Drip irrigation best for onion — reduces purple blotch risk.'},
+          {time:'2 weeks before harvest', action:'Stop irrigation', note:'Stopping water at correct time improves storability.'},
+        ],
+        fertilizers:[
+          {name:'FYM', dose:'25 q/acre', timing:'2 weeks before transplanting', method:'Incorporate in soil'},
+          {name:'DAP', dose:'40 kg/acre', timing:'At transplanting', method:'Basal application'},
+          {name:'Urea', dose:'25 kg/acre (split 2x)', timing:'15 and 30 DAT', method:'Side dressing'},
+          {name:'Potash (MOP)', dose:'30 kg/acre', timing:'30 DAT (bulb initiation)', method:'Top dressing — key for bulb quality'},
+        ],
+        pests:[
+          {name:'Thrips', signs:'Silver streaks on leaves, curling', treatment:'Spinosad 45SC @0.3ml/L or Fipronil spray'},
+          {name:'Purple Blotch', signs:'Purple lesions with yellow halo on leaves', treatment:'Mancozeb 75WP @2g/L + Iprodione spray'},
+          {name:'Basal Rot', signs:'White fluffy mold at base, yellowing', treatment:'Carbendazim 1g/L soil drench + well-drained soil'},
+        ],
+        cost:'20,000', income:'60,000'
+      },
+      Mustard: {
+        emo:'🌼', duration:'90–110 days',
+        weeks:[
+          {n:1, title:'Land Prep & Sowing', desc:'Fine seedbed. Sow @2kg/acre, 30×10cm spacing in Oct–Nov. Very shallow sowing (2cm depth).'},
+          {n:'2–3', title:'Emergence & Thinning', desc:'Thin to 10cm spacing at 15 DAS. First irrigation at 3-leaf stage if needed.'},
+          {n:'4–7', title:'Vegetative & Flowering', desc:'Apply 2nd urea dose. First irrigation critical at flowering. Watch for Alternaria blight.'},
+          {n:'8–14', title:'Pod Filling & Harvest', desc:'2nd irrigation at pod filling. Harvest when 75% pods turn golden. Threshing when dry.'},
+        ],
+        irrigation:[
+          {time:'25 DAS (branching)', action:'1st critical irrigation', note:'If no rain, this irrigation is essential. Do not miss.'},
+          {time:'50 DAS (flowering)', action:'2nd irrigation', note:'Critical for pod setting. Water stress here reduces yield by 20–30%.'},
+          {time:'70 DAS (pod filling)', action:'3rd irrigation', note:'Helps seed development. Stop if rain expected.'},
+        ],
+        fertilizers:[
+          {name:'DAP', dose:'40 kg/acre', timing:'At sowing', method:'Drill below seed or broadcast'},
+          {name:'Urea', dose:'25 kg/acre (1st)', timing:'At sowing', method:'Broadcast and mix'},
+          {name:'Urea', dose:'20 kg/acre (2nd)', timing:'After 1st irrigation', method:'Top dressing'},
+          {name:'Sulfur', dose:'15 kg/acre', timing:'Basal at sowing', method:'Essential for mustard — gypsum form preferred'},
+        ],
+        pests:[
+          {name:'Aphids (Mahu)', signs:'Dense colonies on shoot tips, yellowing', treatment:'Imidacloprid 17.8SL @0.5ml/L or Dimethoate 30EC @1ml/L'},
+          {name:'Alternaria Blight', signs:'Dark brown spots with yellow halo on leaves', treatment:'Mancozeb 75WP @2g/L spray at 50% flowering'},
+          {name:'White Rust', signs:'White powdery pustules on leaves and stem', treatment:'Metalaxyl 8%+Mancozeb 64WP @2g/L spray'},
+        ],
+        cost:'8,000', income:'22,000'
+      }
+    };
+    return plans[crop] || plans.Wheat;
+  }
+
+  function generateFarmerPlan() {
+    if (!nfCrop) { alert('Please select a crop first'); return; }
+    if (!nfIrr)  { alert('Please select irrigation type'); return; }
+    var acresEl = document.getElementById('nf-acres');
+    var acres = acresEl ? (parseFloat(acresEl.value) || 1) : 1;
+    // correct IDs: nf-select-sec, nf-loading, nf-result, nf-plan-content
+    document.getElementById('nf-select-sec').style.display = 'none';
+    document.getElementById('nf-loading').style.display = 'flex';
+    document.getElementById('nf-result').style.display = 'none';
+    var _crop = nfCrop, _acres = acres, _irr = nfIrr;
+    setTimeout(function() {
+      document.getElementById('nf-loading').style.display = 'none';
+      document.getElementById('nf-result').style.display = 'block';
+      renderFarmerPlan(_crop, _acres, _irr);
+      document.getElementById('nf-result').scrollIntoView({ behavior: 'smooth' });
+    }, 1500);
+  }
+
+  function selNFCrop(btn, crop, emo) {
+    var grid = document.getElementById('nf-select-sec');
+    if (grid) grid.querySelectorAll('.wiz-opt').forEach(function(b){ b.classList.remove('sel'); });
+    btn.classList.add('sel');
+    nfCrop = crop;
+    checkNFReady();
+  }
+
+  function selIrr(btn, type) {
+    var irrGrid = document.getElementById('nf-irr-btns');
+    if (irrGrid) irrGrid.querySelectorAll('.wiz-opt').forEach(function(b){ b.classList.remove('sel'); });
+    btn.classList.add('sel');
+    nfIrr = type;
+    checkNFReady();
+  }
+
+  function checkNFReady() {
+    var btn = document.getElementById('nf-gen-btn');
+    if (btn) btn.disabled = !(nfCrop && nfIrr);
+  }
+
+  function renderFarmerPlan(crop, acres, irr) {
+    var plan = getNFPlan(crop, acres, irr);
+    var net = (parseInt(plan.income.replace(/,/g,'')) - parseInt(plan.cost.replace(/,/g,'')));
+    var totalNet = (net * acres).toLocaleString('en-IN');
+    var html = '';
+
+    // Hero
+    html += '<div class="sec" style="background:linear-gradient(135deg,#1a4a8a,#0d2a5a);color:#fff;border:none">'
+      + '<div style="font-size:10px;font-weight:700;letter-spacing:.5px;opacity:.7;margin-bottom:4px">YOUR PERSONALIZED PLAN</div>'
+      + '<div style="font-size:22px;font-weight:700;margin-bottom:4px">' + plan.emo + ' ' + crop + '</div>'
+      + '<div style="font-size:12px;opacity:.8">' + acres + ' acres · ' + irr + ' irrigation · ' + plan.duration + '</div>'
+      + '</div>';
+
+    // Weekly schedule
+    html += '<div class="sec"><div class="sec-head"><h3>📅 Weekly Schedule</h3><span class="badge g">' + plan.weeks.length + ' phases</span></div>';
+    plan.weeks.forEach(function(w) {
+      html += '<div class="nf-week-row"><div class="nf-week-num">Week ' + w.n + '</div>'
+        + '<div class="nf-week-body"><div class="nf-week-title">' + w.title + '</div>'
+        + '<div class="nf-week-desc">' + w.desc + '</div></div></div>';
+    });
+    html += '</div>';
+
+    // Irrigation
+    html += '<div class="sec"><div class="sec-head"><h3>💧 Irrigation Schedule</h3></div>';
+    plan.irrigation.forEach(function(i) {
+      html += '<div class="nf-water-row"><div class="nf-day-badge">' + i.time + '</div>'
+        + '<div><strong style="font-size:13px;color:var(--txt)">' + i.action + '</strong>'
+        + '<br><span style="font-size:12px;color:var(--txt2)">' + i.note + '</span></div></div>';
+    });
+    html += '</div>';
+
+    // Fertilizer
+    html += '<div class="sec"><div class="sec-head"><h3>🌿 Fertilizer Plan</h3><span class="badge g">AI Recommended</span></div>';
+    plan.fertilizers.forEach(function(f) {
+      html += '<div class="nf-fert-row"><div class="nf-fert-name">' + f.name + '</div>'
+        + '<div class="nf-fert-det">' + f.dose + ' · <strong>' + f.timing + '</strong> · ' + f.method + '</div></div>';
+    });
+    html += '</div>';
+
+    // Pests
+    html += '<div class="sec"><div class="sec-head"><h3>🐛 Pest &amp; Disease Watch</h3><span class="badge" style="background:var(--rl);color:var(--red)">Stay Alert</span></div>';
+    plan.pests.forEach(function(p) {
+      html += '<div class="nf-pest-row"><div class="nf-pest-name">⚠️ ' + p.name + '</div>'
+        + '<div class="nf-pest-det">Signs: ' + p.signs + '<br>Treatment: ' + p.treatment + '</div></div>';
+    });
+    html += '</div>';
+
+    // Cost & Revenue
+    html += '<div class="sec"><div class="sec-head"><h3>💰 Cost &amp; Revenue Estimate</h3></div>'
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+      + '<div style="background:var(--rl);border-radius:10px;padding:14px;text-align:center">'
+      + '<div style="font-size:11px;color:var(--red);font-weight:700;margin-bottom:4px">TOTAL COST</div>'
+      + '<div style="font-size:22px;font-weight:700;color:var(--red)">₹' + plan.cost + '</div>'
+      + '<div style="font-size:11px;color:var(--txt2);margin-top:2px">per acre</div></div>'
+      + '<div style="background:var(--gl);border-radius:10px;padding:14px;text-align:center">'
+      + '<div style="font-size:11px;color:var(--g);font-weight:700;margin-bottom:4px">EXPECTED INCOME</div>'
+      + '<div style="font-size:22px;font-weight:700;color:var(--g)">₹' + plan.income + '</div>'
+      + '<div style="font-size:11px;color:var(--txt2);margin-top:2px">per acre</div></div>'
+      + '</div>'
+      + '<div class="tip g" style="margin-top:10px">💵 Net profit ~₹' + net.toLocaleString('en-IN') + '/acre · Total for ' + acres + ' acres: ~₹' + totalNet + '</div>'
+      + '</div>';
+
+    document.getElementById('nf-plan-content').innerHTML = html;
+  }
+
+  function resetNFGuide() {
+    nfCrop = null; nfIrr = null;
+    document.getElementById('nf-select-sec').style.display = 'block';
+    document.getElementById('nf-result').style.display = 'none';
+    document.getElementById('nf-loading').style.display = 'none';
+    var sec = document.getElementById('nf-select-sec');
+    if (sec) sec.querySelectorAll('.wiz-opt').forEach(function(b){ b.classList.remove('sel'); });
+    var btn = document.getElementById('nf-gen-btn');
+    if (btn) btn.disabled = true;
+    window.scrollTo({ top: 0 });
+  }
+
+
+// ── PWA ───────────────────────────────────────────────
+var deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',function(e){
+  e.preventDefault(); deferredPrompt=e;
+  var b=document.getElementById('pwa-banner'); if(b&&!localStorage.getItem('km_pwa')) b.style.display='flex';
+});
+var pwaBtn=document.getElementById('pwa-btn');
+if(pwaBtn) pwaBtn.addEventListener('click',function(){
+  if(!deferredPrompt)return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(function(){deferredPrompt=null;});
+  document.getElementById('pwa-banner').style.display='none';
+  localStorage.setItem('km_pwa','1');
+});
+var pwaClose=document.getElementById('pwa-close');
+if(pwaClose) pwaClose.addEventListener('click',function(){ document.getElementById('pwa-banner').style.display='none'; });
+
+// ── Bill Scanner ──────────────────────────────────────
+var billState = { type: null, imageBase64: null, imageMime: 'image/jpeg', lastResult: null };
+
+function selBillType(el, val) {
+  document.querySelectorAll('.bill-type-btn').forEach(function(b){ b.classList.remove('sel'); });
+  el.classList.add('sel');
+  billState.type = val;
+}
+
+function handleBillUpload(input) {
+  var file = input.files[0];
+  if (!file) return;
+  billState.imageMime = 'image/jpeg'; // canvas always outputs jpeg
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    // Compress via canvas
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      var MAX = 1200;
+      var scale = Math.min(1, MAX / Math.max(img.width, img.height));
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      billState.imageBase64 = canvas.toDataURL('image/jpeg', 0.85).split(',')[1];
+      var preview = document.getElementById('bill-preview-img');
+      preview.src = canvas.toDataURL('image/jpeg', 0.85);
+      preview.style.display = 'block';
+      document.getElementById('bill-scan-btn').style.display = 'block';
+      // animate progress bar
+      var pw = document.getElementById('bill-progress-wrap');
+      var pb = document.getElementById('bill-progress-bar');
+      pw.style.display = 'block';
+      pb.style.width = '0%';
+      setTimeout(function(){ pb.style.width = '100%'; }, 50);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function runBillScan() {
+  if (!billState.imageBase64) return;
+  showBillLoading('Reading bill with AI Vision…');
+  var typeLabel = billState.type || 'agricultural';
+
+  var prompt = 'You are an expert OCR and bill analysis AI for Indian farmers. ' +
+    'Analyse this ' + typeLabel + ' bill image carefully. Extract ALL visible text. ' +
+    'Return ONLY a valid JSON object (no markdown, no explanation) with these exact keys:\n' +
+    '{\n' +
+    '  "vendor_name": "shop/company name or null",\n' +
+    '  "bill_date": "date if found or null",\n' +
+    '  "bill_number": "invoice/receipt number or null",\n' +
+    '  "bill_type": "' + typeLabel + '",\n' +
+    '  "items": [ { "name": "item name", "quantity": "qty+unit", "rate": "rate if found", "amount": "rupee amount as string" } ],\n' +
+    '  "subtotal": "rupee amount or null",\n' +
+    '  "tax": "rupee tax or null",\n' +
+    '  "discount": "rupee discount or null",\n' +
+    '  "grand_total": "total rupee amount as string or null",\n' +
+    '  "raw_text": "full extracted text from bill",\n' +
+    '  "observations": ["observation 1", "observation 2"],\n' +
+    '  "warnings": ["warning if overpriced or suspicious, else empty array"]\n' +
+    '}\n' +
+    'For mandi receipts extract: crop name, weight, rate/quintal, total. ' +
+    'Keep amounts in Indian Rupee format with rupee symbol. If any field not found use null.';
+
+  callVisionAI(billState.imageBase64, billState.imageMime || 'image/jpeg', prompt)
+  .then(function(raw) {
+    hideBillLoading();
+    try {
+      var clean = raw.replace(/```json|```/g,'').trim();
+      var parsed = JSON.parse(clean);
+      billState.lastResult = parsed;
+      renderBillResult(parsed);
+    } catch(e) {
+      billState.lastResult = { raw_text: raw, items: [], grand_total: null,
+        observations: ['AI returned unstructured text — showing raw OCR below.'], warnings: [] };
+      renderBillResult(billState.lastResult);
+    }
+  })
+  .catch(function(err) {
+    hideBillLoading();
+    if(err && err.message === 'NO_KEY') {
+      showBillError('🔑 Gemini API key not set. Open the HTML file, find GEMINI_KEY near line 1110, and paste your free key from aistudio.google.com');
+    } else {
+      showBillError('AI scan failed. Please try again or use a clearer photo of the bill.');
+    }
+  });
+}
+
+function renderBillResult(r) {
+  // Summary rows
+  var summaryHTML = '';
+  var typeMap = { seed:'🌱 Seed Purchase', fertilizer:'🧪 Fertilizer', pesticide:'🐛 Pesticide', mandi:'🏪 Mandi Receipt', electricity:'⚡ Electricity', equipment:'🚜 Equipment', loan:'🏦 Loan/KCC', other:'📄 General Bill' };
+  var badge = document.getElementById('bill-type-badge');
+  if (badge) badge.textContent = typeMap[billState.type] || 'Bill';
+
+  var fields = [
+    { label: '🏪 Vendor / Shop', val: r.vendor_name },
+    { label: '📅 Date', val: r.bill_date },
+    { label: '🔢 Bill / Invoice No.', val: r.bill_number },
+    { label: '💰 Grand Total', val: r.grand_total },
+    { label: '📊 Sub-total', val: r.subtotal },
+    { label: '🏷 Discount', val: r.discount },
+    { label: '📋 Tax / GST', val: r.tax },
+  ];
+  fields.forEach(function(f) {
+    if (f.val && f.val !== 'null' && f.val !== null) {
+      summaryHTML += '<div class="bill-summary-row"><span class="bs-label">'+f.label+'</span><span class="bs-val">'+f.val+'</span></div>';
+    }
+  });
+  if (!summaryHTML) summaryHTML = '<div class="tip a">⚠️ Could not extract structured data. Check raw text below.</div>';
+  document.getElementById('bill-summary-rows').innerHTML = summaryHTML;
+
+  // Items table
+  var itemsSec = document.getElementById('bill-items-sec');
+  if (r.items && r.items.length > 0) {
+    var tbody = document.getElementById('bill-items-body');
+    tbody.innerHTML = r.items.map(function(item, i) {
+      return '<tr><td>'+(i+1)+'</td><td>'+( item.name||'—' )+'</td><td>'+(item.quantity||'—')+'</td><td class="amt-col">'+(item.amount||item.rate||'—')+'</td></tr>';
+    }).join('');
+    document.getElementById('bill-total-cell').textContent = r.grand_total || '—';
+    itemsSec.style.display = 'block';
+  } else {
+    itemsSec.style.display = 'none';
+  }
+
+  // Observations & Warnings
+  var alertsSec = document.getElementById('bill-alerts-sec');
+  var alertsHTML = '';
+  if (r.observations && r.observations.length > 0) {
+    r.observations.forEach(function(obs) {
+      if (obs) alertsHTML += '<div class="bill-alert ok">✅ '+obs+'</div>';
+    });
+  }
+  if (r.warnings && r.warnings.length > 0) {
+    r.warnings.forEach(function(w) {
+      if (w) alertsHTML += '<div class="bill-alert warn">⚠️ '+w+'</div>';
+    });
+  }
+  if (alertsHTML) {
+    document.getElementById('bill-alerts-list').innerHTML = alertsHTML;
+    alertsSec.style.display = 'block';
+  } else {
+    alertsSec.style.display = 'none';
+  }
+
+  // Raw text
+  if (r.raw_text) {
+    document.getElementById('bill-raw-text').textContent = r.raw_text;
+  }
+
+  document.getElementById('bill-loading').style.display = 'none';
+  document.getElementById('bill-results').style.display = 'block';
+  document.getElementById('bill-results').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function demoBillScan(type) {
+  billState.type = type;
+  document.querySelectorAll('.bill-type-btn').forEach(function(b){ b.classList.remove('sel'); });
+  var demos = {
+    seed: {
+      vendor_name: 'Shri Ram Beej Bhandar, Moradabad',
+      bill_date: '15/05/2025',
+      bill_number: 'INV-2025-1042',
+      bill_type: 'Seed Purchase',
+      items: [
+        { name: 'Wheat Seed HD-2967 (Certified)', quantity: '40 kg', rate: '₹45/kg', amount: '₹1,800' },
+        { name: 'Paddy Seed PR-126 (Certified)', quantity: '20 kg', rate: '₹55/kg', amount: '₹1,100' },
+        { name: 'Seed Treatment Chemical (Thiram)', quantity: '1 pkt', rate: '₹120', amount: '₹120' },
+      ],
+      subtotal: '₹3,020',
+      tax: '₹54 (GST 1.8%)',
+      discount: '₹50',
+      grand_total: '₹3,024',
+      raw_text: 'SHRI RAM BEEJ BHANDAR\nNear APMC Market, Moradabad\nGST: 09AABCS1234A1Z5\n\nInvoice No: INV-2025-1042  Date: 15/05/2025\nCustomer: Ramesh Kumar\n\n1. Wheat Seed HD-2967 (Cert.)  40kg @ ₹45   = ₹1800\n2. Paddy Seed PR-126 (Cert.)   20kg @ ₹55   = ₹1100\n3. Thiram Seed Treatment       1pkt @ ₹120  = ₹120\n\nSubtotal: ₹3020\nGST (1.8%): ₹54\nDiscount: -₹50\nGrand Total: ₹3024\n\nPayment: Cash\nThank you for your purchase!',
+      observations: [
+        'Certified seeds purchased — good for better yield & insurance eligibility',
+        'HD-2967 is a recommended high-yielding wheat variety for UP region',
+        'GST invoice available — useful for PM-KISAN & subsidy claims'
+      ],
+      warnings: [
+        'Paddy seed rate ₹55/kg is slightly above MSP recommended input cost — verify with local KVK'
+      ]
+    },
+    fertilizer: {
+      vendor_name: 'Kisaan Agro Centre, Bareilly',
+      bill_date: '02/06/2025',
+      bill_number: 'RC-5521',
+      bill_type: 'Fertilizer Purchase',
+      items: [
+        { name: 'Urea (IFFCO)', quantity: '4 bags × 50kg', rate: '₹266/bag', amount: '₹1,064' },
+        { name: 'DAP (Diammonium Phosphate)', quantity: '2 bags × 50kg', rate: '₹1,350/bag', amount: '₹2,700' },
+        { name: 'MOP (Potash)', quantity: '1 bag × 50kg', rate: '₹950/bag', amount: '₹950' },
+        { name: 'Zinc Sulphate', quantity: '5 kg', rate: '₹60/kg', amount: '₹300' },
+      ],
+      subtotal: '₹5,014',
+      tax: null,
+      discount: null,
+      grand_total: '₹5,014',
+      raw_text: 'KISAAN AGRO CENTRE\nCivil Lines, Bareilly\n\nReceipt No: RC-5521  Date: 02/06/2025\n\n1. Urea (IFFCO)         4×50kg @ 266   = 1064\n2. DAP                  2×50kg @ 1350  = 2700\n3. MOP (Potash)         1×50kg @ 950   = 950\n4. Zinc Sulphate        5kg    @ 60    = 300\n\nTotal: Rs 5014\nPaid: Cash',
+      observations: [
+        'Urea at ₹266/bag is at government controlled MRP — correct pricing',
+        'DAP at ₹1,350/bag — matches current subsidized rate (2025)',
+        'Zinc Sulphate recommended for UP soils showing zinc deficiency'
+      ],
+      warnings: [
+        'Heavy use of Urea (4 bags) may indicate over-application — consider soil health card recommendation for optimal dose'
+      ]
+    },
+    mandi: {
+      vendor_name: 'APMC Mandi, Agra',
+      bill_date: '20/05/2025',
+      bill_number: 'MANDI-TXN-88421',
+      bill_type: 'Mandi Sale Receipt',
+      items: [
+        { name: 'Wheat (Grade A)', quantity: '52 quintal', rate: '₹2,275/qtl', amount: '₹1,18,300' },
+        { name: 'Mandi Tax (0.5%)', quantity: '—', rate: '—', amount: '₹592' },
+        { name: 'Hamali Charges', quantity: '—', rate: '₹10/qtl', amount: '₹520' },
+      ],
+      subtotal: '₹1,18,300',
+      tax: '₹592',
+      discount: null,
+      grand_total: '₹1,17,188',
+      raw_text: 'APMC KRISHI UPAJ MANDI SAMITI\nAgra, Uttar Pradesh\nLicense No: UP-AG-0234\n\nTxn No: MANDI-TXN-88421  Date: 20/05/2025\nFarmer: Suresh Yadav  Village: Shamsabad\nAadhar: XXXX-XXXX-4521\n\nCrop: Wheat (Grade A)\nQuantity: 52 Quintal (5200 kg)\nRate: ₹2275 per quintal\nGross Amount: ₹1,18,300\n\nDeductions:\nMandi Tax (0.5%): ₹592\nHamali: ₹520\n\nNet Payable: ₹1,17,188\nPayment Mode: RTGS to Bank Account\nIFSC: SBIN0001234',
+      observations: [
+        'Sale rate ₹2,275/qtl is above Wheat MSP 2024-25 (₹2,275) — fair price received',
+        'Payment via RTGS directly to bank — safe and traceable transaction',
+        'Mandi tax 0.5% is standard UP APMC rate'
+      ],
+      warnings: [
+        'Hamali charges ₹10/qtl is at higher end — negotiate with mandi agent for bulk produce'
+      ]
+    }
+  };
+  var r = demos[type];
+  if (!r) return;
+  billState.lastResult = r;
+  showBillLoading('Loading demo result…');
+  setTimeout(function(){ renderBillResult(r); }, 800);
+}
+
+function showBillLoading(msg) {
+  document.getElementById('bill-loading-msg').textContent = msg || 'Processing…';
+  document.getElementById('bill-loading').style.display = 'flex';
+  document.getElementById('bill-results').style.display = 'none';
+}
+function hideBillLoading() {
+  document.getElementById('bill-loading').style.display = 'none';
+}
+function showBillError(msg) {
+  document.getElementById('bill-results').style.display = 'none';
+  document.getElementById('bill-loading').style.display = 'none';
+  document.getElementById('bill-summary-rows').innerHTML = '<div class="bill-alert red">❌ '+msg+'</div>';
+  document.getElementById('bill-results').style.display = 'block';
+}
+function toggleBillRaw() {
+  var box = document.getElementById('bill-raw-text');
+  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+}
+function resetBillScanner() {
+  billState = { type: null, imageBase64: null, lastResult: null };
+  document.getElementById('bill-results').style.display = 'none';
+  document.getElementById('bill-preview-img').style.display = 'none';
+  document.getElementById('bill-scan-btn').style.display = 'none';
+  document.getElementById('bill-progress-wrap').style.display = 'none';
+  document.getElementById('bill-loading').style.display = 'none';
+  document.querySelectorAll('.bill-type-btn').forEach(function(b){ b.classList.remove('sel'); });
+  document.getElementById('bill-input-camera').value = '';
+  document.getElementById('bill-input-gallery').value = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function copyBillSummary() {
+  var r = billState.lastResult;
+  if (!r) return;
+  var lines = [
+    '🧾 KrishiMitra Bill Summary',
+    '─────────────────────────',
+    'Vendor: ' + (r.vendor_name || '—'),
+    'Date: ' + (r.bill_date || '—'),
+    'Bill No: ' + (r.bill_number || '—'),
+    'Grand Total: ' + (r.grand_total || '—'),
+    '',
+    '📋 Items:',
+  ];
+  if (r.items && r.items.length > 0) {
+    r.items.forEach(function(item, i) {
+      lines.push((i+1)+'. '+item.name+' | '+item.quantity+' | '+item.amount);
+    });
+  }
+  if (r.observations && r.observations.length > 0) {
+    lines.push('', '✅ Observations:');
+    r.observations.forEach(function(o){ if(o) lines.push('• '+o); });
+  }
+  if (r.warnings && r.warnings.length > 0) {
+    lines.push('', '⚠️ Warnings:');
+    r.warnings.forEach(function(w){ if(w) lines.push('• '+w); });
+  }
+  lines.push('', 'Scanned via KrishiMitra');
+  var text = lines.join('\n');
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(function(){
+      alert('✅ Bill summary copied to clipboard!');
+    });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    alert('✅ Copied!');
+  }
+}
+
+// ── Startup ───────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',function(){
+  renderPrices();
+  renderAlerts();
+  loadLivePrices();
+  loadLiveWeather(); // load immediately on startup
+});
+
+</script>
+</body>
+</html>

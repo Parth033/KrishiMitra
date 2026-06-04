@@ -607,7 +607,7 @@ canvas{max-width:100%}
     <div style="background:linear-gradient(135deg,#c2410c,#7c2d12);border-radius:14px;padding:18px;margin-bottom:12px;text-align:center;box-shadow:0 4px 20px rgba(194,65,12,.25)">
       <div style="font-size:12px;color:#fed7aa;letter-spacing:.3px;text-transform:uppercase;margin-bottom:6px">Eligible Schemes Found</div>
       <div style="font-size:36px;font-weight:700;color:#fff" id="sc-res-count">—</div>
-      <div style="font-size:13px;color:#fed7aa;margin-top:4px">government schemes match your profile</div>
+      <div style="font-size:13px;color:#fed7aa;margin-top:4px" id="sc-res-sub">government schemes match your profile</div>
     </div>
     <!-- Category filter chips -->
     <div id="sc-cat-chips" style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:12px;padding-bottom:2px"></div>
@@ -1199,6 +1199,35 @@ var YIELD_DATA = {
   Potato:{min:80,max:120,price:1100},Onion:{min:100,max:150,price:2200}
 };
 
+function getAdvisorFallback(){
+  var season=WIZ.season||'Rabi';
+  var soil=WIZ.soil||'Loam';
+  var rabi=[
+    {name:'Wheat',em:'🌾',match:92,price:'₹2,425/q',yield:'18-22 q/acre',color:'#2d5a27',profit:48000},
+    {name:'Mustard',em:'🌻',match:80,price:'₹5,950/q',yield:'8-10 q/acre',color:'#c27c1a',profit:36000},
+    {name:'Gram',em:'🌿',match:70,price:'₹5,440/q',yield:'6-8 q/acre',color:'#3a7a32',profit:28000}
+  ];
+  var kharif=[
+    {name:'Paddy',em:'🍚',match:90,price:'₹2,300/q',yield:'15-20 q/acre',color:'#1a6b5a',profit:42000},
+    {name:'Maize',em:'🌽',match:78,price:'₹2,090/q',yield:'20-28 q/acre',color:'#c27c1a',profit:32000},
+    {name:'Soybean',em:'🫘',match:68,price:'₹4,892/q',yield:'8-12 q/acre',color:'#2d5a27',profit:26000}
+  ];
+  var crops=season==='Kharif'?kharif:rabi;
+  return {
+    topCrop:crops[0].name,
+    summary:'Best crop recommendations for '+season+' season on '+soil+' soil',
+    crops:crops,
+    calendar:[
+      {step:1,title:'Land Preparation',desc:'Deep plough 2-3 times, add FYM 2 weeks before sowing.'},
+      {step:2,title:'Sowing',desc:'Sow certified seeds at recommended depth and spacing.'},
+      {step:3,title:'Irrigation',desc:'First irrigation 20-25 days after sowing. Avoid waterlogging.'},
+      {step:4,title:'Fertilizer',desc:'Apply NPK as per soil health card. Split doses recommended.'},
+      {step:5,title:'Pest Watch',desc:'Monitor weekly. Apply neem oil spray as first defence.'},
+      {step:6,title:'Harvest',desc:'Harvest at correct maturity to maximize yield and quality.'}
+    ]
+  };
+}
+
 function runAdvisor() {
   document.getElementById('adv-wizard').style.display = 'none';
   document.getElementById('adv-loading').style.display = 'flex';
@@ -1207,12 +1236,11 @@ function runAdvisor() {
   callAI([{role:'system',content:sys},{role:'user',content:msg}], 1000).then(function(txt){
     var r;
     try{ r=JSON.parse(txt.replace(/```json|```/g,'').trim()); }
-    catch(e){ r={topCrop:'Wheat',summary:'Best for your soil and season',crops:[{name:'Wheat',em:'🌾',match:92,price:'₹2,425/q',yield:'18-22 q/acre',color:'#2d5a27',profit:48000},{name:'Mustard',em:'🌻',match:78,price:'₹5,950/q',yield:'8-10 q/acre',color:'#c27c1a',profit:36000},{name:'Potato',em:'🥔',match:65,price:'₹1,100/q',yield:'80-120 q/acre',color:'#8b5e3c',profit:28000}],calendar:[{step:1,title:'Land Preparation',desc:'Deep plough 2-3 times, add FYM 2 weeks before.'},{step:2,title:'Sowing',desc:'Sow seeds at recommended depth and spacing.'},{step:3,title:'Irrigation',desc:'First irrigation 20-25 days after sowing.'},{step:4,title:'Fertilizer',desc:'Apply as per soil test. Split doses recommended.'},{step:5,title:'Harvest',desc:'Harvest at correct maturity to maximize yield.'}]}; }
+    catch(e){ r=null; }
+    if(!r) r=getAdvisorFallback();
     showAdvisorResult(r);
   }).catch(function(){
-    document.getElementById('adv-loading').style.display='none';
-    document.getElementById('adv-wizard').style.display='block';
-    alert('Could not get AI advice. Please check internet and try again.');
+    showAdvisorResult(getAdvisorFallback());
   });
 }
 
@@ -1464,17 +1492,33 @@ var GEMINI_KEY = 'AIzaSyDfqa_Qs94L8WjEgNEIq05c4jqN7AC-oiw'; // ← paste your ke
 // Text-only: Pollinations (for chat, crop advisor, schemes text)
 function callAI(messages, maxTokens) {
   var body=JSON.stringify({model:'openai-large',messages:messages,max_tokens:maxTokens||800,seed:42});
+  var eps=[
+    'https://api.pollinations.ai/v1/chat/completions',
+    'https://text.pollinations.ai/openai',
+    'https://api.pollinations.ai/v1/chat/completions' // retry first endpoint
+  ];
   function tryEp(i){
-    var eps=['https://api.pollinations.ai/v1/chat/completions','https://text.pollinations.ai/openai'];
     if(i>=eps.length) return Promise.reject(new Error('All endpoints failed'));
-    return fetch(eps[i],{method:'POST',headers:{'Content-Type':'application/json'},body:body})
-      .then(function(r){if(!r.ok) throw new Error('HTTP '+r.status); return r.json();})
+    // Add timeout of 15s per attempt
+    var controller=typeof AbortController!=='undefined'?new AbortController():null;
+    var timer=controller?setTimeout(function(){controller.abort();},15000):null;
+    var opts={method:'POST',headers:{'Content-Type':'application/json'},body:body};
+    if(controller) opts.signal=controller.signal;
+    return fetch(eps[i],opts)
+      .then(function(r){
+        if(timer) clearTimeout(timer);
+        if(!r.ok) throw new Error('HTTP '+r.status);
+        return r.json();
+      })
       .then(function(d){
         var t=d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content;
         if(!t) throw new Error('Empty response');
         return t;
       })
-      .catch(function(){return tryEp(i+1);});
+      .catch(function(err){
+        if(timer) clearTimeout(timer);
+        return tryEp(i+1);
+      });
   }
   return tryEp(0);
 }

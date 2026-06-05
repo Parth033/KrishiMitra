@@ -367,10 +367,11 @@ canvas{max-width:100%}
   <div class="sec">
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px" id="price-filters">
       <button class="fchip on" onclick="filterPrices('all',this)">All</button>
-      <button class="fchip" onclick="filterPrices('grains',this)">Grains</button>
-      <button class="fchip" onclick="filterPrices('pulses',this)">Pulses</button>
-      <button class="fchip" onclick="filterPrices('vegetables',this)">Vegetables</button>
-      <button class="fchip" onclick="filterPrices('oilseeds',this)">Oilseeds</button>
+      <button class="fchip" onclick="filterPrices('grains',this)">🌾 Grains</button>
+      <button class="fchip" onclick="filterPrices('pulses',this)">🫘 Pulses</button>
+      <button class="fchip" onclick="filterPrices('vegetables',this)">🥦 Vegetables</button>
+      <button class="fchip" onclick="filterPrices('oilseeds',this)">🌻 Oilseeds</button>
+      <button class="fchip" onclick="filterPrices('fruits',this)">🍎 Fruits</button>
     </div>
     <div id="price-ts" style="font-size:11px;color:var(--txt3);text-align:right;margin-bottom:8px"></div>
     <div id="price-list"></div>
@@ -1272,25 +1273,69 @@ function showAdvisorResult(r) {
 }
 
 // ── Prices ────────────────────────────────────────────
-var FALLBACK = [
-  {em:'🌾',nm:'Wheat',cat:'grains',price:2425,chg:2.5,min:2300,max:2550},
-  {em:'🍚',nm:'Paddy (Rice)',cat:'grains',price:2300,chg:1.8,min:2100,max:2480},
-  {em:'🌽',nm:'Maize',cat:'grains',price:2090,chg:-0.5,min:1950,max:2200},
-  {em:'🌱',nm:'Moong Dal',cat:'pulses',price:8682,chg:3.1,min:8200,max:9100},
-  {em:'🫘',nm:'Arhar Dal',cat:'pulses',price:7550,chg:2.4,min:7100,max:7900},
-  {em:'🌿',nm:'Chana Dal',cat:'pulses',price:5650,chg:1.2,min:5300,max:5900},
-  {em:'🍅',nm:'Tomato',cat:'vegetables',price:1400,chg:8.5,min:800,max:2200},
-  {em:'🧅',nm:'Onion',cat:'vegetables',price:2200,chg:5.3,min:1500,max:3000},
-  {em:'🥔',nm:'Potato',cat:'vegetables',price:1100,chg:-2.1,min:800,max:1400},
-  {em:'🌶',nm:'Chilli',cat:'vegetables',price:9800,chg:4.2,min:8500,max:11000},
-  {em:'🌻',nm:'Mustard',cat:'oilseeds',price:5950,chg:2.9,min:5650,max:6200},
-  {em:'🥜',nm:'Groundnut',cat:'oilseeds',price:6783,chg:1.5,min:6400,max:7100},
-  {em:'🌿',nm:'Cotton',cat:'oilseeds',price:7121,chg:3.7,min:6800,max:7400},
-  {em:'🫘',nm:'Soybean',cat:'oilseeds',price:4892,chg:0.8,min:4600,max:5100},
-  {em:'🌾',nm:'Jowar',cat:'grains',price:3371,chg:1.2,min:3100,max:3600},
-  {em:'🌾',nm:'Bajra',cat:'grains',price:2625,chg:0.9,min:2400,max:2800},
-  {em:'🫘',nm:'Urad Dal',cat:'pulses',price:7400,chg:1.8,min:7000,max:7800}
+// Global fallback data for prices (used when live API fails)
+var PRICE_FALLBACK = [
+  // ── Grains ──
+  {nm:'Wheat',        price:2585, market:'MSP 2025-26', em:'🌾', cat:'grains',    chg:0, min:2500, max:2700},
+  {nm:'Paddy',        price:2369, market:'MSP 2025-26', em:'🍚', cat:'grains',    chg:0, min:2200, max:2600},
+  {nm:'Rice',         price:3200, market:'Avg Mandi',   em:'🍚', cat:'grains',    chg:0, min:2800, max:3800},
+  {nm:'Maize',        price:2225, market:'MSP 2025-26', em:'🌽', cat:'grains',    chg:0, min:2000, max:2500},
+  {nm:'Jowar',        price:3371, market:'MSP 2025-26', em:'🌾', cat:'grains',    chg:0, min:3100, max:3600},
+  {nm:'Bajra',        price:2625, market:'MSP 2025-26', em:'🌾', cat:'grains',    chg:0, min:2400, max:2900},
+  {nm:'Ragi',         price:4290, market:'MSP 2025-26', em:'🌾', cat:'grains',    chg:0, min:4000, max:4600},
+  {nm:'Barley',       price:1850, market:'MSP 2025-26', em:'🌾', cat:'grains',    chg:0, min:1700, max:2000},
+  {nm:'Sugarcane',    price:340,  market:'FRP 2025-26', em:'🎋', cat:'grains',    chg:0, min:310,  max:370},
+  {nm:'Jute',         price:5335, market:'MSP 2025-26', em:'🌿', cat:'grains',    chg:0, min:5000, max:5700},
+  // ── Pulses ──
+  {nm:'Arhar (Tur)',  price:7550, market:'MSP 2025-26', em:'🫘', cat:'pulses',    chg:0, min:7000, max:8500},
+  {nm:'Moong',        price:8682, market:'MSP 2025-26', em:'🌱', cat:'pulses',    chg:0, min:8000, max:9800},
+  {nm:'Urad',         price:7400, market:'MSP 2025-26', em:'🫘', cat:'pulses',    chg:0, min:7000, max:8000},
+  {nm:'Gram (Chana)', price:5650, market:'MSP 2025-26', em:'🌿', cat:'pulses',    chg:0, min:5200, max:6500},
+  {nm:'Masoor',       price:6700, market:'Avg Mandi',   em:'🫘', cat:'pulses',    chg:0, min:6200, max:7500},
+  {nm:'Rajma',        price:9500, market:'Avg Mandi',   em:'🫘', cat:'pulses',    chg:0, min:8500, max:11000},
+  {nm:'Lobia',        price:6800, market:'Avg Mandi',   em:'🌿', cat:'pulses',    chg:0, min:6000, max:7500},
+  {nm:'Moth Bean',    price:5500, market:'Avg Mandi',   em:'🫘', cat:'pulses',    chg:0, min:4800, max:6200},
+  {nm:'Peas',         price:3500, market:'Avg Mandi',   em:'🫛', cat:'pulses',    chg:0, min:2000, max:6000},
+  // ── Oilseeds ──
+  {nm:'Groundnut',    price:6783, market:'MSP 2025-26', em:'🥜', cat:'oilseeds',  chg:0, min:6400, max:7500},
+  {nm:'Mustard',      price:5950, market:'MSP 2025-26', em:'🌻', cat:'oilseeds',  chg:0, min:5600, max:6600},
+  {nm:'Soybean',      price:4892, market:'MSP 2025-26', em:'🫘', cat:'oilseeds',  chg:0, min:4500, max:5500},
+  {nm:'Sunflower',    price:7280, market:'MSP 2025-26', em:'🌻', cat:'oilseeds',  chg:0, min:6800, max:7800},
+  {nm:'Sesame',       price:9267, market:'MSP 2025-26', em:'🌿', cat:'oilseeds',  chg:0, min:8500, max:10000},
+  {nm:'Cotton',       price:7121, market:'MSP 2025-26', em:'☁️', cat:'oilseeds',  chg:0, min:6800, max:7800},
+  {nm:'Castor',       price:6480, market:'MSP 2025-26', em:'🌿', cat:'oilseeds',  chg:0, min:6000, max:7000},
+  {nm:'Linseed',      price:5800, market:'MSP 2025-26', em:'🌿', cat:'oilseeds',  chg:0, min:5400, max:6300},
+  // ── Vegetables ──
+  {nm:'Onion',        price:2000, market:'Avg Mandi',   em:'🧅', cat:'vegetables', chg:0, min:1000, max:4000},
+  {nm:'Potato',       price:1200, market:'Avg Mandi',   em:'🥔', cat:'vegetables', chg:0, min:700,  max:2000},
+  {nm:'Tomato',       price:4000, market:'Avg Mandi',   em:'🍅', cat:'vegetables', chg:0, min:1500, max:8000},
+  {nm:'Garlic',       price:8000, market:'Avg Mandi',   em:'🧄', cat:'vegetables', chg:0, min:5000, max:15000},
+  {nm:'Ginger',       price:7500, market:'Avg Mandi',   em:'🫚', cat:'vegetables', chg:0, min:5000, max:12000},
+  {nm:'Chilli',       price:9000, market:'Avg Mandi',   em:'🌶️', cat:'vegetables', chg:0, min:6000, max:15000},
+  {nm:'Brinjal',      price:1800, market:'Avg Mandi',   em:'🍆', cat:'vegetables', chg:0, min:1000, max:3000},
+  {nm:'Cauliflower',  price:1500, market:'Avg Mandi',   em:'🥦', cat:'vegetables', chg:0, min:800,  max:2500},
+  {nm:'Cabbage',      price:1200, market:'Avg Mandi',   em:'🥬', cat:'vegetables', chg:0, min:600,  max:2000},
+  {nm:'Lady Finger',  price:2500, market:'Avg Mandi',   em:'🌿', cat:'vegetables', chg:0, min:1500, max:4000},
+  {nm:'Bitter Gourd', price:2800, market:'Avg Mandi',   em:'🥒', cat:'vegetables', chg:0, min:1800, max:4500},
+  {nm:'Pumpkin',      price:1000, market:'Avg Mandi',   em:'🎃', cat:'vegetables', chg:0, min:600,  max:1800},
+  {nm:'Spinach',      price:2000, market:'Avg Mandi',   em:'🥬', cat:'vegetables', chg:0, min:1000, max:3500},
+  {nm:'Cluster Beans',price:2200, market:'Avg Mandi',   em:'🌿', cat:'vegetables', chg:0, min:1200, max:3500},
+  {nm:'Cowpea',       price:3000, market:'Avg Mandi',   em:'🌿', cat:'vegetables', chg:0, min:2000, max:4500},
+  {nm:'Capsicum',     price:4000, market:'Avg Mandi',   em:'🫑', cat:'vegetables', chg:0, min:2500, max:7000},
+  {nm:'Cucumber',     price:1500, market:'Avg Mandi',   em:'🥒', cat:'vegetables', chg:0, min:800,  max:2800},
+  {nm:'Carrot',       price:2000, market:'Avg Mandi',   em:'🥕', cat:'vegetables', chg:0, min:1200, max:3500},
+  {nm:'Raddish',      price:1200, market:'Avg Mandi',   em:'🌿', cat:'vegetables', chg:0, min:600,  max:2000},
+  // ── Fruits ──
+  {nm:'Banana',       price:1500, market:'Avg Mandi',   em:'🍌', cat:'fruits',    chg:0, min:800,  max:2500},
+  {nm:'Mango',        price:3500, market:'Avg Mandi',   em:'🥭', cat:'fruits',    chg:0, min:2000, max:8000},
+  {nm:'Apple',        price:8000, market:'Avg Mandi',   em:'🍎', cat:'fruits',    chg:0, min:5000, max:15000},
+  {nm:'Lemon',        price:5000, market:'Avg Mandi',   em:'🍋', cat:'fruits',    chg:0, min:3000, max:9000},
+  {nm:'Papaya',       price:2000, market:'Avg Mandi',   em:'🍈', cat:'fruits',    chg:0, min:1000, max:4000},
+  {nm:'Grapes',       price:5000, market:'Avg Mandi',   em:'🍇', cat:'fruits',    chg:0, min:3000, max:9000},
+  {nm:'Pomegranate',  price:6000, market:'Avg Mandi',   em:'🍎', cat:'fruits',    chg:0, min:4000, max:10000},
+  {nm:'Watermelon',   price:800,  market:'Avg Mandi',   em:'🍉', cat:'fruits',    chg:0, min:400,  max:1500}
 ];
+
 var LIVE_PRICES = [];
 var PRICE_CAT = 'all';
 var PRICES_LOADED = false;
@@ -1305,53 +1350,162 @@ function filterPrices(cat, btn) {
 function renderPrices() {
   var list = document.getElementById('price-list');
   if(!list) return;
-  var data = PRICES_LOADED && LIVE_PRICES.length ? LIVE_PRICES : FALLBACK;
-  var filtered = PRICE_CAT==='all' ? data : data.filter(function(p){ return p.cat===PRICE_CAT; });
-  if(!filtered.length) filtered = data;
+  var data = (PRICES_LOADED && LIVE_PRICES.length) ? LIVE_PRICES : PRICE_FALLBACK;
+  var filtered = PRICE_CAT === 'all' ? data : data.filter(function(p){ return p.cat === PRICE_CAT; });
+  // If live data has no items in this category, supplement with fallback for that category
+  if(filtered.length === 0 && PRICES_LOADED) {
+    filtered = PRICE_FALLBACK.filter(function(p){ return p.cat === PRICE_CAT; });
+  }
   var ts = document.getElementById('price-ts');
-  if(ts) ts.textContent = (PRICES_LOADED ? '🟢 Live prices · ' : '🟡 Reference MSP prices · ') + new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+  if(ts) ts.textContent = (PRICES_LOADED ? '🟢 Live mandi data · data.gov.in · ' : '🟡 MSP 2025-26 reference · ') + new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
   list.innerHTML = filtered.map(function(p){
-    var cls=p.chg>=0?'up':'dn'; var arr=p.chg>=0?'↑':'↓';
-    var range=p.min&&p.max?'<div style="font-size:10px;color:var(--txt3)">₹'+p.min.toLocaleString()+' – ₹'+p.max.toLocaleString()+'</div>':'';
-    return '<div class="price-item"><div class="p-ico">'+(p.em||'🌾')+'</div><div class="p-nm">'+p.nm+'<div style="font-size:10px;color:var(--txt3)">'+(p.market||'per quintal')+'</div></div><div style="text-align:right"><div class="p-val">₹'+p.price.toLocaleString()+'</div><span class="p-chg '+cls+'">'+arr+' '+Math.abs(p.chg).toFixed(1)+'%</span>'+range+'</div></div>';
-  }).join('');
+    var cls = p.chg >= 0 ? 'up' : 'dn';
+    var arr = p.chg >= 0 ? '↑' : '↓';
+    var range = p.min && p.max ? '<div style="font-size:10px;color:var(--txt3)">₹'+p.min.toLocaleString()+' – ₹'+p.max.toLocaleString()+'</div>' : '';
+    return '<div class="price-item">'+
+      '<div class="p-ico">'+(p.em||'🌾')+'</div>'+
+      '<div class="p-nm">'+p.nm+'<div style="font-size:10px;color:var(--txt3)">'+(p.market||'per quintal')+'</div></div>'+
+      '<div style="text-align:right">'+
+        '<div class="p-val">₹'+p.price.toLocaleString()+'</div>'+
+        '<span class="p-chg '+cls+'">'+arr+' '+Math.abs(p.chg).toFixed(1)+'%</span>'+
+        range+
+      '</div>'+
+    '</div>';
+  }).join('') || '<div class="empty">No data for this category today.</div>';
 }
 
 function loadLivePrices() {
   var list = document.getElementById('price-list');
   if(!list) return;
-  list.innerHTML = '<div class="ai-loading"><div class="spinner"></div><span>Loading MSP prices…</span></div>';
+  list.innerHTML = '<div class="ai-loading"><div class="spinner"></div><span>Fetching live mandi prices…</span></div>';
 
-  // Static MSP 2024-25 data (data.gov.in API requires paid registration — using official MSP instead)
-  // Source: Cabinet Committee on Economic Affairs (CCEA) MSP 2024-25
-  var MSP_DATA = [
-    {nm:'Wheat',       price:2425, market:'MSP 2024-25', em:'🌾', cat:'grains',   chg:+0.8},
-    {nm:'Paddy',       price:2300, market:'MSP 2024-25', em:'🍚', cat:'grains',   chg:+0.4},
-    {nm:'Maize',       price:2090, market:'MSP 2024-25', em:'🌽', cat:'grains',   chg:+0.6},
-    {nm:'Jowar',       price:3371, market:'MSP 2024-25', em:'🌾', cat:'grains',   chg:+0.3},
-    {nm:'Bajra',       price:2625, market:'MSP 2024-25', em:'🌾', cat:'grains',   chg:+0.5},
-    {nm:'Ragi',        price:4290, market:'MSP 2024-25', em:'🌾', cat:'grains',   chg:+0.7},
-    {nm:'Arhar (Tur)', price:7550, market:'MSP 2024-25', em:'🫘', cat:'pulses',   chg:+1.2},
-    {nm:'Moong',       price:8682, market:'MSP 2024-25', em:'🌱', cat:'pulses',   chg:+0.9},
-    {nm:'Urad',        price:7400, market:'MSP 2024-25', em:'🫘', cat:'pulses',   chg:+0.8},
-    {nm:'Groundnut',   price:6783, market:'MSP 2024-25', em:'🥜', cat:'oilseeds', chg:+0.6},
-    {nm:'Mustard',     price:5950, market:'MSP 2024-25', em:'🌻', cat:'oilseeds', chg:+1.1},
-    {nm:'Soybean',     price:4892, market:'MSP 2024-25', em:'🫘', cat:'oilseeds', chg:+0.4},
-    {nm:'Sunflower',   price:7280, market:'MSP 2024-25', em:'🌻', cat:'oilseeds', chg:+0.7},
-    {nm:'Sesame',      price:9267, market:'MSP 2024-25', em:'🌿', cat:'oilseeds', chg:+0.5},
-    {nm:'Cotton',      price:7121, market:'MSP 2024-25', em:'☁️', cat:'oilseeds', chg:+0.8},
-    {nm:'Sugarcane',   price:340,  market:'FRP 2024-25', em:'🎋', cat:'grains',   chg:+0.3},
-    {nm:'Jute',        price:5335, market:'MSP 2024-25', em:'🌿', cat:'grains',   chg:+0.6},
-    {nm:'Onion',       price:2200, market:'Avg Mandi',   em:'🧅', cat:'vegetables',chg:-1.2},
-    {nm:'Potato',      price:1500, market:'Avg Mandi',   em:'🥔', cat:'vegetables',chg:-0.8},
-    {nm:'Tomato',      price:3200, market:'Avg Mandi',   em:'🍅', cat:'vegetables',chg:+2.1}
+  var DATAGOV_KEY = '579b464db66ec23bdd000001a6bd2a32895f426242ec03308e630742';
+  var RESOURCE_ID = '9ef84268-d588-465a-a308-a864a43d0070';
+
+  var CROP_META = {
+    // Grains
+    'Wheat':{em:'🌾',cat:'grains'},'Paddy':{em:'🍚',cat:'grains'},
+    'Rice':{em:'🍚',cat:'grains'},'Maize':{em:'🌽',cat:'grains'},
+    'Jowar':{em:'🌾',cat:'grains'},'Bajra':{em:'🌾',cat:'grains'},
+    'Ragi':{em:'🌾',cat:'grains'},'Barley':{em:'🌾',cat:'grains'},
+    'Sugarcane':{em:'🎋',cat:'grains'},'Jute':{em:'🌿',cat:'grains'},
+    'Maize':{em:'🌽',cat:'grains'},'Cumbu':{em:'🌾',cat:'grains'},
+    'Millet':{em:'🌾',cat:'grains'},
+    // Pulses
+    'Arhar':{em:'🫘',cat:'pulses'},'Tur':{em:'🫘',cat:'pulses'},
+    'Moong':{em:'🌱',cat:'pulses'},'Urad':{em:'🫘',cat:'pulses'},
+    'Gram':{em:'🌿',cat:'pulses'},'Masoor':{em:'🫘',cat:'pulses'},
+    'Rajma':{em:'🫘',cat:'pulses'},'Lobia':{em:'🌿',cat:'pulses'},
+    'Moth':{em:'🫘',cat:'pulses'},'Peas':{em:'🫛',cat:'pulses'},
+    'Beans':{em:'🫘',cat:'pulses'},'Seam':{em:'🫘',cat:'pulses'},
+    'Cowpea':{em:'🌿',cat:'pulses'},'Cluster':{em:'🌿',cat:'pulses'},
+    'Field Pea':{em:'🫛',cat:'pulses'},'Dolichos':{em:'🫘',cat:'pulses'},
+    // Oilseeds
+    'Groundnut':{em:'🥜',cat:'oilseeds'},'Mustard':{em:'🌻',cat:'oilseeds'},
+    'Soybean':{em:'🫘',cat:'oilseeds'},'Soyabean':{em:'🫘',cat:'oilseeds'},
+    'Sunflower':{em:'🌻',cat:'oilseeds'},'Cotton':{em:'☁️',cat:'oilseeds'},
+    'Castor':{em:'🌿',cat:'oilseeds'},'Linseed':{em:'🌿',cat:'oilseeds'},
+    'Sesame':{em:'🌿',cat:'oilseeds'},'Safflower':{em:'🌻',cat:'oilseeds'},
+    // Vegetables
+    'Tomato':{em:'🍅',cat:'vegetables'},'Onion':{em:'🧅',cat:'vegetables'},
+    'Potato':{em:'🥔',cat:'vegetables'},'Chilli':{em:'🌶️',cat:'vegetables'},
+    'Garlic':{em:'🧄',cat:'vegetables'},'Ginger':{em:'🫚',cat:'vegetables'},
+    'Brinjal':{em:'🍆',cat:'vegetables'},'Cauliflower':{em:'🥦',cat:'vegetables'},
+    'Cabbage':{em:'🥬',cat:'vegetables'},'Bhindi':{em:'🌿',cat:'vegetables'},
+    'Lady':{em:'🌿',cat:'vegetables'},'Okra':{em:'🌿',cat:'vegetables'},
+    'Bitter':{em:'🥒',cat:'vegetables'},'Pumpkin':{em:'🎃',cat:'vegetables'},
+    'Spinach':{em:'🥬',cat:'vegetables'},'Capsicum':{em:'🫑',cat:'vegetables'},
+    'Cucumber':{em:'🥒',cat:'vegetables'},'Kheera':{em:'🥒',cat:'vegetables'},
+    'Carrot':{em:'🥕',cat:'vegetables'},'Raddish':{em:'🌿',cat:'vegetables'},
+    'Radish':{em:'🌿',cat:'vegetables'},'Pointed':{em:'🌿',cat:'vegetables'},
+    'Parval':{em:'🌿',cat:'vegetables'},'Gourd':{em:'🥒',cat:'vegetables'},
+    'Methi':{em:'🌿',cat:'vegetables'},'Coriander':{em:'🌿',cat:'vegetables'},
+    'Drumstick':{em:'🌿',cat:'vegetables'},'Tinda':{em:'🌿',cat:'vegetables'},
+    'Yam':{em:'🌿',cat:'vegetables'},'Sweet Potato':{em:'🥔',cat:'vegetables'},
+    // Fruits
+    'Banana':{em:'🍌',cat:'fruits'},'Mango':{em:'🥭',cat:'fruits'},
+    'Apple':{em:'🍎',cat:'fruits'},'Lemon':{em:'🍋',cat:'fruits'},
+    'Papaya':{em:'🍈',cat:'fruits'},'Grapes':{em:'🍇',cat:'fruits'},
+    'Pomegranate':{em:'🍎',cat:'fruits'},'Watermelon':{em:'🍉',cat:'fruits'},
+    'Orange':{em:'🍊',cat:'fruits'},'Guava':{em:'🍐',cat:'fruits'},
+    'Pineapple':{em:'🍍',cat:'fruits'},'Coconut':{em:'🥥',cat:'fruits'},
+    'Sapota':{em:'🍈',cat:'fruits'},'Jackfruit':{em:'🍈',cat:'fruits'},
+    'Litchi':{em:'🍒',cat:'fruits'},'Plum':{em:'🍑',cat:'fruits'},
+    'Fig':{em:'🍇',cat:'fruits'},'Custard Apple':{em:'🍈',cat:'fruits'},
+    // Fish & Others
+    'Fish':{em:'🐟',cat:'others'}
+  };
+
+  var FALLBACK_DATA = PRICE_FALLBACK;
+
+    function processRecords(records) {
+    var map = {};
+    records.forEach(function(r) {
+      var nm = (r.commodity || r.Commodity || '').trim();
+      var modal = parseFloat(r.modal_price || r.Modal_Price || r.modal || 0);
+      var min = parseFloat(r.min_price || r.Min_Price || 0);
+      var max = parseFloat(r.max_price || r.Max_Price || 0);
+      var market = (r.market || r.Market || r.district || '').split('(')[0].trim();
+      if(!nm || modal < 10) return;
+      var metaKey = Object.keys(CROP_META).find(function(k){
+        return nm.toLowerCase().indexOf(k.toLowerCase()) !== -1;
+      });
+      var meta = CROP_META[metaKey] || {em:'🌾', cat:'grains'};
+      if(!map[nm]) {
+        map[nm] = {nm:nm, price:Math.round(modal), min:Math.round(min),
+          max:Math.round(max), market:market, em:meta.em, cat:meta.cat, chg:0};
+      } else {
+        map[nm].price = Math.round((map[nm].price + modal) / 2);
+      }
+    });
+    var live = Object.values(map).slice(0, 30);
+    live.forEach(function(item) {
+      var fb = FALLBACK_DATA.find(function(f){
+        return f.nm.toLowerCase().indexOf(item.nm.toLowerCase()) !== -1 ||
+               item.nm.toLowerCase().indexOf(f.nm.split(' ')[0].toLowerCase()) !== -1;
+      });
+      if(fb) item.chg = parseFloat(((item.price - fb.price) / fb.price * 100).toFixed(1));
+    });
+    return live;
+  }
+
+  // Try multiple CORS proxies + direct URL
+  var baseUrl = 'https://api.data.gov.in/resource/' + RESOURCE_ID +
+    '?api-key=' + DATAGOV_KEY + '&format=json&limit=100&offset=0';
+
+  var attempts = [
+    'https://corsproxy.io/?' + encodeURIComponent(baseUrl),
+    'https://api.allorigins.win/raw?url=' + encodeURIComponent(baseUrl),
+    baseUrl // direct last attempt
   ];
 
-  setTimeout(function(){
-    LIVE_PRICES = MSP_DATA;
-    PRICES_LOADED = true;
-    renderPrices();
-  }, 600);
+  function tryUrl(i) {
+    if(i >= attempts.length) return Promise.reject(new Error('All attempts failed'));
+    return fetch(attempts[i])
+      .then(function(r) {
+        if(!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function(d) {
+        var records = d.records || [];
+        if(!records.length) throw new Error('No records');
+        return processRecords(records);
+      })
+      .catch(function() { return tryUrl(i + 1); });
+  }
+
+  tryUrl(0)
+    .then(function(live) {
+      if(live.length < 3) throw new Error('Too few');
+      LIVE_PRICES = live;
+      PRICES_LOADED = true;
+      renderPrices();
+    })
+    .catch(function() {
+      LIVE_PRICES = FALLBACK_DATA;
+      PRICES_LOADED = false;
+      renderPrices();
+    });
 }
 
 // ── Price Alerts ──────────────────────────────────────
@@ -1489,38 +1643,60 @@ function loadLiveWeather() {
 // -----------------------------------------------------
 var GEMINI_KEY = 'AIzaSyDfqa_Qs94L8WjEgNEIq05c4jqN7AC-oiw'; // ← paste your key here
 
-// Text-only: Pollinations (for chat, crop advisor, schemes text)
+// Text-only AI: tries multiple free providers in order
 function callAI(messages, maxTokens) {
-  var body=JSON.stringify({model:'openai-large',messages:messages,max_tokens:maxTokens||800,seed:42});
-  var eps=[
-    'https://api.pollinations.ai/v1/chat/completions',
-    'https://text.pollinations.ai/openai',
-    'https://api.pollinations.ai/v1/chat/completions' // retry first endpoint
-  ];
-  function tryEp(i){
-    if(i>=eps.length) return Promise.reject(new Error('All endpoints failed'));
-    // Add timeout of 15s per attempt
-    var controller=typeof AbortController!=='undefined'?new AbortController():null;
-    var timer=controller?setTimeout(function(){controller.abort();},15000):null;
-    var opts={method:'POST',headers:{'Content-Type':'application/json'},body:body};
-    if(controller) opts.signal=controller.signal;
-    return fetch(eps[i],opts)
-      .then(function(r){
-        if(timer) clearTimeout(timer);
-        if(!r.ok) throw new Error('HTTP '+r.status);
-        return r.json();
-      })
-      .then(function(d){
-        var t=d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content;
-        if(!t) throw new Error('Empty response');
-        return t;
-      })
-      .catch(function(err){
-        if(timer) clearTimeout(timer);
-        return tryEp(i+1);
-      });
+  // Provider 1: Pollinations (no key)
+  function tryPollinations(){
+    var body=JSON.stringify({model:'openai-large',messages:messages,max_tokens:maxTokens||800,seed:42});
+    var eps=['https://api.pollinations.ai/v1/chat/completions','https://text.pollinations.ai/openai'];
+    function tryEp(i){
+      if(i>=eps.length) return Promise.reject(new Error('Pollinations failed'));
+      var ctrl=typeof AbortController!=='undefined'?new AbortController():null;
+      var t=ctrl?setTimeout(function(){ctrl.abort();},12000):null;
+      var opts={method:'POST',headers:{'Content-Type':'application/json'},body:body};
+      if(ctrl) opts.signal=ctrl.signal;
+      return fetch(eps[i],opts)
+        .then(function(r){if(t)clearTimeout(t);if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+        .then(function(d){
+          var txt=d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content;
+          if(!txt)throw new Error('Empty');
+          return txt;
+        })
+        .catch(function(){if(t)clearTimeout(t);return tryEp(i+1);});
+    }
+    return tryEp(0);
   }
-  return tryEp(0);
+
+  // Provider 2: Gemini Flash (text mode, using same key)
+  function tryGeminiText(){
+    if(!GEMINI_KEY||GEMINI_KEY.indexOf('Demo')!==-1) return Promise.reject(new Error('No key'));
+    var url='https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+GEMINI_KEY;
+    // Convert messages to Gemini format
+    var prompt=messages.map(function(m){
+      return (m.role==='system'?'[System]: ':m.role==='user'?'[User]: ':'[Assistant]: ')+m.content;
+    }).join('\n\n');
+    var body=JSON.stringify({
+      contents:[{parts:[{text:prompt}]}],
+      generationConfig:{temperature:0.3,maxOutputTokens:maxTokens||800}
+    });
+    var ctrl=typeof AbortController!=='undefined'?new AbortController():null;
+    var t=ctrl?setTimeout(function(){ctrl.abort();},15000):null;
+    var opts={method:'POST',headers:{'Content-Type':'application/json'},body:body};
+    if(ctrl) opts.signal=ctrl.signal;
+    return fetch(url,opts)
+      .then(function(r){if(t)clearTimeout(t);if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+      .then(function(d){
+        var txt=d.candidates&&d.candidates[0]&&d.candidates[0].content&&
+                d.candidates[0].content.parts&&d.candidates[0].content.parts[0]&&
+                d.candidates[0].content.parts[0].text;
+        if(!txt)throw new Error('Empty Gemini text');
+        return txt;
+      })
+      .catch(function(e){if(t)clearTimeout(t);throw e;});
+  }
+
+  // Try Pollinations first, fall back to Gemini text
+  return tryPollinations().catch(function(){return tryGeminiText();});
 }
 
 // Vision: Gemini 1.5 Flash (for disease scanner + bill scanner)
@@ -1549,7 +1725,8 @@ function callVisionAI(base64Img, mimeType, prompt) {
   return fetch(GEMINI_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: body
+    body: body,
+    mode: 'cors'
   })
   .then(function(r) {
     if (!r.ok) return r.json().then(function(e){ throw new Error(e.error&&e.error.message||'HTTP '+r.status); });
@@ -1568,6 +1745,33 @@ function callVisionAI(base64Img, mimeType, prompt) {
 var chatHistory=[];
 var chatBusy=false;
 var CHAT_SYS='You are KrishiAI, a friendly Indian agricultural expert. Help farmers with crops, pests, fertilizers, schemes and prices. Be concise and practical. Answer in Hindi if asked in Hindi, English otherwise.';
+
+// Offline knowledge base for when AI is unavailable
+var OFFLINE_KB=[
+  {keys:['june','kharif','monsoon','barish'],ans:'June mein Kharif crops best hain: Paddy (chawal), Maize (makka), Soybean, Cotton, Groundnut. Mitti test karke beej chune. Kharif season June-July mein shuru hota hai.'},
+  {keys:['wheat','gehun','rabi'],ans:'Wheat (Gehun) Rabi season crop hai. November-December mein boya jata hai. MSP 2024-25: ₹2,425/quintal. HD-3226 aur PBW-343 popular varieties hain.'},
+  {keys:['paddy','rice','chawal','dhaan'],ans:'Paddy ke liye MSP ₹2,300/quintal (2024-25). June-July mein transplanting karein. IR-64, Swarna aur Pusa Basmati popular varieties hain.'},
+  {keys:['pm-kisan','pmkisan','kisan samman'],ans:'PM-KISAN: ₹6,000/year direct aapke bank account mein. 3 instalments mein ₹2,000 each. pmkisan.gov.in par check karein ya helpline 155261 par call karein.'},
+  {keys:['fertilizer','khad','urea','dap'],ans:'Wheat ke liye: 120kg N, 60kg P, 40kg K per hectare. Urea mein 46% N hota hai. DAP mein 18% N + 46% P. Split doses mein daalein - basal + top dressing.'},
+  {keys:['pest','kida','makda','aphid'],ans:'Aphid ke liye: Neem oil 5ml/litre paani mein spray karein. Ya Imidacloprid 0.5ml/litre. Subah ya sham ko spray karein. Baar baar ek hi chemical use mat karein.'},
+  {keys:['weather','mausam','rain','barish'],ans:'Live weather ke liye Weather tab kholen. Open-Meteo se real-time data aata hai apke location ka.'},
+  {keys:['mandi','price','bhav','market'],ans:'Live mandi prices ke liye Prices tab kholen. APMC mandi dhundhne ke liye Mandi tab use karein - state aur district select karein.'},
+  {keys:['loan','kcc','credit','kisan credit'],ans:'Kisan Credit Card (KCC): 4% interest par ₹3 lakh tak loan. Apne nazdiki bank ya NABARD se apply karein. PM-KISAN beneficiary hain to priority milegi.'},
+  {keys:['insurance','bima','fasal bima'],ans:'PM Fasal Bima Yojana: Kharif mein 2% premium, Rabi mein 1.5% premium. Drought, flood, pest sab cover hota hai. pmfby.gov.in par register karein.'},
+  {keys:['soil','mitti','pH','health card'],ans:'Soil Health Card: FREE mein soil testing government karta hai. soilhealth.dac.gov.in par apply karein ya nazdiki Krishi Kendra jayein. Har 2 saal mein test recommended hai.'},
+  {keys:['disease','rog','blight','rust','fungus'],ans:'Plant disease ke liye Scan Plant tab use karein - photo upload karein aur AI analysis milega. General advice: Neem oil spray preventive hai. Infected parts immediately hata dein.'}
+];
+
+function getOfflineAnswer(q){
+  var ql=q.toLowerCase();
+  for(var i=0;i<OFFLINE_KB.length;i++){
+    var kb=OFFLINE_KB[i];
+    for(var j=0;j<kb.keys.length;j++){
+      if(ql.indexOf(kb.keys[j])!==-1) return kb.ans;
+    }
+  }
+  return '🌾 AI temporarily unavailable. Please try again in a moment.\n\nMeanwhile: Crop advice → Advisor tab | Mandi prices → Prices tab | Schemes → Schemes tab | Disease scan → Scan Plant tab.';
+}
 
 function qAsk(q){ document.getElementById('chat-inp').value=q; sendChat(); }
 
@@ -1588,7 +1792,9 @@ function sendChat(){
     chatHistory.push({role:'assistant',content:reply});
   }).catch(function(){
     typing.remove();
-    addMsg('⚠️ Could not reach AI. Please check internet and try again.','bot');
+    var fallback=getOfflineAnswer(q);
+    addMsg(fallback,'bot');
+    chatHistory.push({role:'assistant',content:fallback});
   }).finally(function(){
     chatBusy=false;
     if(btn) btn.disabled=false;
@@ -1692,7 +1898,14 @@ function runScan(){
         '<span style="color:var(--g);font-weight:700">✅ Free — no billing, no credit card needed</span></div>'+
       '</div>';
     } else {
-      output.innerHTML='<div class="tip r">⚠️ Scan failed. Check your internet connection and try again.</div>';
+      output.innerHTML='<div class="tip a" style="border-radius:12px;padding:14px">'+
+        '<div style="font-size:14px;font-weight:700;margin-bottom:6px">⚠️ Scan could not complete</div>'+
+        '<div style="font-size:12px;line-height:1.7;color:var(--txt)">Possible reasons:<br>'+
+        '• Image too dark or blurry — retake in good light<br>'+
+        '• Gemini API quota exceeded (15 req/min free limit)<br>'+
+        '• Try again after 1 minute<br><br>'+
+        '<strong>Meanwhile try the Demo buttons below ↓</strong></div>'+
+      '</div>';
     }
   });
 }

@@ -83,14 +83,6 @@ Just open `index.html` in any browser. Most features work offline/locally.
 
 ---
 
-## 📱 Screenshots
-
-> *(Add screenshots here after deployment)*
-
-| Home Dashboard | AI Crop Advisor | Plant Disease Scanner |
-|:-:|:-:|:-:|
-| ![home](screenshots/home.png) | ![advisor](screenshots/advisor.png) | ![scan](screenshots/scan.png) |
-
 ---
 
 ## 🌐 Bilingual Support

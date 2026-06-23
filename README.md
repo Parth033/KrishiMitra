@@ -136,4 +136,4 @@ This project is open source under the [MIT License](LICENSE).
 
 ---
 
-<p align="center">Made with ❤️ for Indian farmers · <strong>KrishiMitra 2.0</strong></p>
+<p align="center">Made with ❤️ for Indian farmers · <strong>KrishiMitra</strong></p>
